@@ -1,8 +1,11 @@
 from queue import LifoQueue 
 import analizer
+import sys
 
 with open(file = 'chocopy_example.py') as f:
     
+    CRED = '\033[91m'
+    CEND = '\033[0m'
     tab_size = 4
     indentation_stack = LifoQueue()
     indentation_stack.put(0) 
@@ -20,7 +23,8 @@ with open(file = 'chocopy_example.py') as f:
                 print('<NEWLINE>')
                 #Logic to check the indentation level
                 #The indentation must be a multiple of TAB_SIZE
-                if indentation_level % tab_size != 0: raise Exception("Indentation error")
+                if indentation_level % tab_size != 0:
+                    sys.exit(CRED +"Error: Indentation error, line: "+str(line_number)+", column: "+str(column_number)+ CEND)
                 indentation_last_level = indentation_stack.get()       
                 if indentation_level > indentation_last_level: 
                     #add a new indentation level

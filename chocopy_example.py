@@ -1,4 +1,10 @@
 class Animal(object):
+    a:int = 0     
+    b:int = 100
+    c:int = 8736485
+    d:int = 123+1
+    e:int = 100    -    12
+    f:int = 0.1
     makes_noise:bool = False
 
     def make_noise(self: "Animal") -> object:
