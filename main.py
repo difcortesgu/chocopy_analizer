@@ -2,7 +2,7 @@ from queue import LifoQueue
 import analizer
 import sys
 
-with open(file = 'chocopy_example.py') as f:
+with open(file = 'chocopy_example.txt') as f:
     
     CRED = '\033[91m'
     CEND = '\033[0m'

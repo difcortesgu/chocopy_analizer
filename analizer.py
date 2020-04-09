@@ -3,6 +3,11 @@ import sys
 CRED = '\033[91m'
 CEND = '\033[0m'
 
+operators = {'+':"tk_suma", '-':"tk_resta", '*':"tk_mult", '//':"tk_div_entera", '%':"tk_modulo", 
+    '<':"tk_menor_que", '>':"tk_mayor_que", '<=':"tk_menor_igual", '>=':"tk_mayor_igual", '==':"tk_igual", 
+    '!=':"tk_diferente", '=':"tk_asignacion", '(':"tk_par_izq", ')':"tk_par_der", '[':"tk_corchete_izq", 
+    ']':"tk_corchete_der", ',':"tk_coma", ':':"tk_dos_puntos", '.':"tk_punto", '->':"tk_ejecuta"}
+
 def transition_function (string, line_number, column_number = 0):
     
     if string[column_number] == '#' or string[column_number] == '\n' or string[column_number] == '\r': 
@@ -62,10 +67,45 @@ def check_string(string, column_number):
     return {'lexema':None, 'next':None}
 
 def check_operator(string, column_number):
-    return {'lexema':None, 'next':None}
+    sig = column_number+1
+    #double-character cases
+    if string[column_number] == "/":
+        if string[sig] == "/":
+            return {'lexema':"tk_div_entera", 'next':sig+1}
+        else:
+            #error
+            return {'lexema':None, 'next':None}
+    if string[column_number] == "!":
+        if string[sig] == "=":
+            return {'lexema':"tk_diferente", 'next':sig+1}
+        else:
+            #error
+            return {'lexema':None, 'next':None}
+    if string[column_number] == "-":
+        if string[sig] == ">":
+            return {'lexema':"tk_ejecuta", 'next':sig+1}
+        else:
+            #error
+            return {'lexema':None, 'next':None}
+    if string[column_number] == "<":
+        if string[sig] == "=":
+            return {'lexema':"tk_menor_igual", 'next':sig+1}
+    if string[column_number] == ">":
+        if string[sig] == "=":
+            return {'lexema':"tk_mayor_igual", 'next':sig+1}
+    if string[column_number] == "=":
+        if string[sig] == ">":
+            return {'lexema':"tk_igual", 'next':sig+1}
+    
+    if string[column_number] in operators:
+        lex = operators[string[column_number]]
+        return {'lexema':lex, 'next':sig}
+    else:
+        return {'lexema':None, 'next':None}
 
 def check_special_word(string, column_number):
     return {'lexema':None, 'next':None}
 
+#jose
 def check_id(string, column_number):
     return {'lexema':None, 'next':None}
