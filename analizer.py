@@ -108,4 +108,13 @@ def check_special_word(string, column_number):
 
 #jose
 def check_id(string, column_number):
-    return {'lexema':None, 'next':None}
+    final = column_number
+    actual = string[column_number]
+    if ((48 <= ord(actual) and ord(actual) <= 57) or (65 <= ord(actual) and ord(actual) <= 90) or (97 <= ord(actual) and ord(actual) <= 122) or (ord(actual) == 95)): #is number or letter
+        for i, char in enumerate(string[column_number:]):
+            if not ((48 <= ord(actual) and ord(actual) <= 57) or (65 <= ord(char) and ord(char) <= 90) or (97 <= ord(char) and ord(char) <= 122) or (ord(char) == 95)):
+                final = column_number + i
+                break
+    for i, char in enumerate(string[final:]):
+        if char != ' ' or char != '\t':
+            return {'lexema':string[column_number:final], 'next':final+i}
