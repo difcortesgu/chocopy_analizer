@@ -60,61 +60,60 @@ def check_number(string, line_number, column_number):
                     final = column_number + i
                     break
         for i ,char in enumerate(string[final:]):
-            if char != ' ' or char != '\t':
+            if ord(char) != 32 and ord(char) != 9:
                 return {'lexema':string[column_number:final], 'next':final + i}
     
 def check_string(string, column_number):
     return {'lexema':None, 'next':None}
 
 def check_operator(string, column_number):
-    sig = column_number+1
+    sig = column_number + 1
+    final = column_number + 2
     #double-character cases
     if string[column_number] == "/":
         if string[sig] == "/":
-            return {'lexema':"tk_div_entera", 'next':sig+1}
+            return {'lexema':"tk_div_entera", 'next':count_spaces(string, final)}
         else:
-            #error
             return {'lexema':None, 'next':None}
     if string[column_number] == "!":
         if string[sig] == "=":
-            return {'lexema':"tk_diferente", 'next':sig+1}
+            return {'lexema':"tk_diferente", 'next':count_spaces(string, final)}
         else:
-            #error
             return {'lexema':None, 'next':None}
     if string[column_number] == "-":
         if string[sig] == ">":
-            return {'lexema':"tk_ejecuta", 'next':sig+1}
-        else:
-            #error
-            return {'lexema':None, 'next':None}
+            return {'lexema':"tk_ejecuta", 'next':count_spaces(string, final)}
     if string[column_number] == "<":
         if string[sig] == "=":
-            return {'lexema':"tk_menor_igual", 'next':sig+1}
+            return {'lexema':"tk_menor_igual", 'next':count_spaces(string, final)}
     if string[column_number] == ">":
         if string[sig] == "=":
-            return {'lexema':"tk_mayor_igual", 'next':sig+1}
+            return {'lexema':"tk_mayor_igual", 'next':count_spaces(string, final)}
     if string[column_number] == "=":
-        if string[sig] == ">":
-            return {'lexema':"tk_igual", 'next':sig+1}
-    
+        if string[sig] == "=":
+            return {'lexema':"tk_igual", 'next':count_spaces(string, final)}
+    #one-character cases
     if string[column_number] in operators:
         lex = operators[string[column_number]]
-        return {'lexema':lex, 'next':sig}
+        return {'lexema':lex, 'next':count_spaces(string, sig)}
     else:
         return {'lexema':None, 'next':None}
 
 def check_special_word(string, column_number):
     return {'lexema':None, 'next':None}
 
-#jose
 def check_id(string, column_number):
     final = column_number
     actual = string[column_number]
     if ((48 <= ord(actual) and ord(actual) <= 57) or (65 <= ord(actual) and ord(actual) <= 90) or (97 <= ord(actual) and ord(actual) <= 122) or (ord(actual) == 95)): #is number or letter
         for i, char in enumerate(string[column_number:]):
-            if not ((48 <= ord(actual) and ord(actual) <= 57) or (65 <= ord(char) and ord(char) <= 90) or (97 <= ord(char) and ord(char) <= 122) or (ord(char) == 95)):
+            if not ((48 <= ord(char) and ord(char) <= 57) or (65 <= ord(char) and ord(char) <= 90) or (97 <= ord(char) and ord(char) <= 122) or (ord(char) == 95)):
                 final = column_number + i
                 break
+    spaces = count_spaces(string, final)
+    return {'lexema':string[column_number:final], 'next':spaces}
+
+def count_spaces (string, final):
     for i, char in enumerate(string[final:]):
-        if char != ' ' or char != '\t':
-            return {'lexema':string[column_number:final], 'next':final+i}
+        if char != ' ' and char != '\t':
+            return final + i
