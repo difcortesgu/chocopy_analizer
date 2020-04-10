@@ -3,6 +3,7 @@ import re
 
 CRED = '\033[91m'
 CEND = '\033[0m'
+MAX_INT = 2147483647
 STRING_REGEX = re.compile('[\x20-\x7E\\\n\t\"]')
 KEYWORDS = {'a' : ['and','as','assert','async','await'], 
             'b' : ['bool','break'], 
@@ -84,7 +85,11 @@ def check_number(string, line_number, column_number):
                     break
             final = column_number + i
             if str.isdigit(char):
+                if int(string[column_number:]) > MAX_INT:
+                    sys.exit(CRED + "Error: The maximum value for a number is "+str(MAX_INT)+", line: "+str(line_number + 1)+", column: "+str(column_number + 1) + CEND)
                 return {'lexema':string[column_number:], 'next':final+1}
+        if int(string[column_number:final]) > MAX_INT:
+            sys.exit(CRED + "Error: The maximum value for a number is "+str(MAX_INT)+", line: "+str(line_number + 1)+", column: "+str(column_number + 1) + CEND)
         return {'lexema':string[column_number:final], 'next':final}
            
 def check_string(string, column_number):

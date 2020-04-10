@@ -1,9 +1,3 @@
-# Prueba de numeros
-# 1234            56
-# 0123
-# 0   123
-# 34.234
-# 9576=34
 
 # Prueba de strings
 # "hola"        "1as"
@@ -27,9 +21,18 @@
 # int
 
 # Prueba de Ids
-id1         hola_1
-1id
-_____
-hola=abs
-id.uno
-final
+# id1         hola_1
+# 1id
+# _____
+# hola=abs
+# id.uno
+# final
+
+# Prueba de numeros
+# 1234            56
+# 0123
+# 0   123
+# 34.234
+# 9576=34
+# 2147483648
+# 2323
