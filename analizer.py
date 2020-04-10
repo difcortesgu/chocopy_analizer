@@ -28,6 +28,11 @@ KEYWORDS = {'a' : ['and','as','assert','async','await'],
 KEYWORDS_REGEX = re.compile('[abcdefFgilnNoprsTtwy_]')
                 
 
+operators = {'+':"tk_suma", '-':"tk_resta", '*':"tk_mult", '//':"tk_div_entera", '%':"tk_modulo", 
+    '<':"tk_menor_que", '>':"tk_mayor_que", '<=':"tk_menor_igual", '>=':"tk_mayor_igual", '==':"tk_igual", 
+    '!=':"tk_diferente", '=':"tk_asignacion", '(':"tk_par_izq", ')':"tk_par_der", '[':"tk_corchete_izq", 
+    ']':"tk_corchete_der", ',':"tk_coma", ':':"tk_dos_puntos", '.':"tk_punto", '->':"tk_ejecuta"}
+
 def transition_function (string, line_number, column_number = 0):
     
     if string[column_number] == '#' or string[column_number] == '\n' or string[column_number] == '\r': 
@@ -80,7 +85,7 @@ def check_number(string, line_number, column_number):
                     final = column_number + i
                     break
         for i ,char in enumerate(string[final:]):
-            if char != ' ' or char != '\t':
+            if ord(char) != 32 and ord(char) != 9:
                 return {'lexema':string[column_number:final], 'next':final + i}
     
 def check_string(string, column_number):
@@ -101,7 +106,37 @@ def check_string(string, column_number):
             return {'lexema':None, 'next':None}
 
 def check_operator(string, column_number):
-    return {'lexema':None, 'next':None}
+    sig = column_number + 1
+    final = column_number + 2
+    #double-character cases
+    if string[column_number] == "/":
+        if string[sig] == "/":
+            return {'lexema':"tk_div_entera", 'next':count_spaces(string, final)}
+        else:
+            return {'lexema':None, 'next':None}
+    if string[column_number] == "!":
+        if string[sig] == "=":
+            return {'lexema':"tk_diferente", 'next':count_spaces(string, final)}
+        else:
+            return {'lexema':None, 'next':None}
+    if string[column_number] == "-":
+        if string[sig] == ">":
+            return {'lexema':"tk_ejecuta", 'next':count_spaces(string, final)}
+    if string[column_number] == "<":
+        if string[sig] == "=":
+            return {'lexema':"tk_menor_igual", 'next':count_spaces(string, final)}
+    if string[column_number] == ">":
+        if string[sig] == "=":
+            return {'lexema':"tk_mayor_igual", 'next':count_spaces(string, final)}
+    if string[column_number] == "=":
+        if string[sig] == "=":
+            return {'lexema':"tk_igual", 'next':count_spaces(string, final)}
+    #one-character cases
+    if string[column_number] in operators:
+        lex = operators[string[column_number]]
+        return {'lexema':lex, 'next':count_spaces(string, sig)}
+    else:
+        return {'lexema':None, 'next':None}
 
 def check_special_word(string, column_number):
     if str.isdigit(string[column_number]):
@@ -126,4 +161,17 @@ def check_special_word(string, column_number):
     
 
 def check_id(string, column_number):
-    return {'lexema':None, 'next':None}
+    final = column_number
+    actual = string[column_number]
+    if ((48 <= ord(actual) and ord(actual) <= 57) or (65 <= ord(actual) and ord(actual) <= 90) or (97 <= ord(actual) and ord(actual) <= 122) or (ord(actual) == 95)): #is number or letter
+        for i, char in enumerate(string[column_number:]):
+            if not ((48 <= ord(char) and ord(char) <= 57) or (65 <= ord(char) and ord(char) <= 90) or (97 <= ord(char) and ord(char) <= 122) or (ord(char) == 95)):
+                final = column_number + i
+                break
+    spaces = count_spaces(string, final)
+    return {'lexema':string[column_number:final], 'next':spaces}
+
+def count_spaces (string, final):
+    for i, char in enumerate(string[final:]):
+        if char != ' ' and char != '\t':
+            return final + i
