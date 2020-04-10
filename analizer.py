@@ -35,41 +35,40 @@ operators = {'+':"tk_suma", '-':"tk_resta", '*':"tk_mult", '//':"tk_div_entera",
 
 def transition_function (string, line_number, column_number = 0):
     
-    if string[column_number] == '#' or string[column_number] == '\n' or string[column_number] == '\r': 
+    if column_number >= len(string) or string[column_number] == '#' or string[column_number] == '\n' or string[column_number] == '\r': 
         return # Check for a commented line or end line 
-    #print(string[column_number])
+    
+    #Read all extra spaces
+    while string[column_number] == ' ' or string[column_number] == '\t':
+        column_number += 1
+
     token = check_number(string, line_number, column_number)
     if token['lexema']:
-        print('<NUMBER, ' + token['lexema'] + ', ' + str(line_number) + ', ' + str(column_number) + '>')
+        print('<NUMBER, ' + token['lexema'] + ', ' + str(line_number + 1) + ', ' + str(column_number+1) + '>')
         return transition_function(string, line_number, token['next'])
     
     token = check_string(string, column_number)
     if token['lexema']:
-        print('<STRING, ' + token['lexema'] + ', ' + str(line_number) + ', ' + str(column_number) + '>')
+        print('<STRING, ' + token['lexema'] + ', ' + str(line_number +1) + ', ' + str(column_number+1) + '>')
         return transition_function(string, line_number, token['next'])    
     
     token = check_operator(string, column_number)
     if token['lexema']:
-        print('<' + token['lexema'] + ', ' + str(line_number) + ', ' + str(column_number) + '>')
+        print('<' + token['lexema'] + ', ' + str(line_number +1) + ', ' + str(column_number+1) + '>')
         return transition_function(string, line_number, token['next'])
 
     token = check_special_word(string, column_number)
     if token['lexema']:
-        print('<' + token['lexema'] + ', ' + str(line_number) + ', ' + str(column_number) + '>')
+        print('<' + token['lexema'] + ', ' + str(line_number +1) + ', ' + str(column_number+1) + '>')
         return transition_function(string, line_number, token['next'])
     
     token = check_id(string, column_number)
     if token['lexema']:
-        print('<ID, ' + token['lexema'] + ', ' + str(line_number) + ', ' + str(column_number) + '>')
+        print('<ID, ' + token['lexema'] + ', ' + str(line_number +1) + ', ' + str(column_number+1) + '>')
         return transition_function(string, line_number, token['next'])
-    #This is just to test the functionality while is not complete
-    return transition_function(string, line_number, column_number+1)
-    sys.exit(CRED + "Error: Unrecognized symbol '"+string[column_number]+"', line: "+str(line_number)+", column: "+str(column_number) + CEND)
+    sys.exit(CRED + "Error: Unrecognized symbol '"+string[column_number]+"', line: "+str(line_number +1)+", column: "+str(column_number+1) + CEND)
 
 
-# All of these functions must receive and return the same
-# receives: string, column_number
-# returns: <string lexema> found lexema, <int next> position where the next lexema might begin
 def check_number(string, line_number, column_number):
     if not str.isdigit(string[column_number]):
         return {'lexema':None, 'next':None}
@@ -77,17 +76,17 @@ def check_number(string, line_number, column_number):
         final = column_number                
         if int(string[column_number]) == 0:
             if str.isdigit(string[column_number +1]):
-                sys.exit(CRED + "Error: A number can't have leading ceros, line: "+str(line_number)+", column: "+str(column_number + 1) + CEND)
+                sys.exit(CRED + "Error: A number can't have leading ceros, line: "+str(line_number + 1)+", column: "+str(column_number + 1) + CEND)
             final = column_number + 1
-        if 1 <= int(string[column_number]) and int(string[column_number]) <= 10:
+        else:
             for i ,char in enumerate(string[column_number:]):
                 if not str.isdigit(char):
-                    final = column_number + i
                     break
-        for i ,char in enumerate(string[final:]):
-            if ord(char) != 32 and ord(char) != 9:
-                return {'lexema':string[column_number:final], 'next':final + i}
-    
+            final = column_number + i
+            if str.isdigit(char):
+                return {'lexema':string[column_number:], 'next':final+1}
+        return {'lexema':string[column_number:final], 'next':final}
+           
 def check_string(string, column_number):
     if str.isdigit(string[column_number]):
         return {'lexema':None, 'next':None}
@@ -111,30 +110,30 @@ def check_operator(string, column_number):
     #double-character cases
     if string[column_number] == "/":
         if string[sig] == "/":
-            return {'lexema':"tk_div_entera", 'next':count_spaces(string, final)}
+            return {'lexema':"tk_div_entera", 'next':final}
         else:
             return {'lexema':None, 'next':None}
     if string[column_number] == "!":
         if string[sig] == "=":
-            return {'lexema':"tk_diferente", 'next':count_spaces(string, final)}
+            return {'lexema':"tk_diferente", 'next':final}
         else:
             return {'lexema':None, 'next':None}
     if string[column_number] == "-":
         if string[sig] == ">":
-            return {'lexema':"tk_ejecuta", 'next':count_spaces(string, final)}
+            return {'lexema':"tk_ejecuta", 'next':final}
     if string[column_number] == "<":
         if string[sig] == "=":
-            return {'lexema':"tk_menor_igual", 'next':count_spaces(string, final)}
+            return {'lexema':"tk_menor_igual", 'next':final}
     if string[column_number] == ">":
         if string[sig] == "=":
-            return {'lexema':"tk_mayor_igual", 'next':count_spaces(string, final)}
+            return {'lexema':"tk_mayor_igual", 'next':final}
     if string[column_number] == "=":
         if string[sig] == "=":
-            return {'lexema':"tk_igual", 'next':count_spaces(string, final)}
+            return {'lexema':"tk_igual", 'next':final}
     #one-character cases
     if string[column_number] in operators:
         lex = operators[string[column_number]]
-        return {'lexema':lex, 'next':count_spaces(string, sig)}
+        return {'lexema':lex, 'next':sig}
     else:
         return {'lexema':None, 'next':None}
 
@@ -148,9 +147,12 @@ def check_special_word(string, column_number):
                 if string[column_number:column_number+7]=="__init__":
                     return {'lexema':string[column_number:column_number+7], 'next':column_number+7}
             elif not char.isalpha():
-                final = column_number + i 
                 break
-            
+        final = column_number + i
+        if str.isalpha(string[final]) or str.isdigit(string[final] or string[final] == '_'):
+            if final == len(string) - 1 and string[column_number:] in KEYWORDS[string[column_number]]:
+                return {'lexema':string[column_number:], 'next':len(string)} 
+            return {'lexema':None, 'next':None} 
         if string[column_number:final] in KEYWORDS[string[column_number]]:
             return {'lexema':string[column_number:final], 'next':final}
         else:
@@ -158,20 +160,14 @@ def check_special_word(string, column_number):
     else:
         return {'lexema':None, 'next':None}
 
-    
-
 def check_id(string, column_number):
     final = column_number
     actual = string[column_number]
     if ((48 <= ord(actual) and ord(actual) <= 57) or (65 <= ord(actual) and ord(actual) <= 90) or (97 <= ord(actual) and ord(actual) <= 122) or (ord(actual) == 95)): #is number or letter
         for i, char in enumerate(string[column_number:]):
             if not ((48 <= ord(char) and ord(char) <= 57) or (65 <= ord(char) and ord(char) <= 90) or (97 <= ord(char) and ord(char) <= 122) or (ord(char) == 95)):
-                final = column_number + i
                 break
-    spaces = count_spaces(string, final)
-    return {'lexema':string[column_number:final], 'next':spaces}
-
-def count_spaces (string, final):
-    for i, char in enumerate(string[final:]):
-        if char != ' ' and char != '\t':
-            return final + i
+        final = column_number + i
+    if final == len(string) - 1 and (str.isalpha(string[final]) or str.isdigit(string[final]) or string[final] == '_'):
+        return {'lexema':string[column_number:], 'next':len(string)}
+    return {'lexema':string[column_number:final], 'next':final}

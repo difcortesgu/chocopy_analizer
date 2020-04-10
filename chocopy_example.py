@@ -1,26 +1,35 @@
-class Animal(object):
-    a:int = 0     
-    b:int = 100
-    c:int = 8736485
-    d:int = 123 + 1
-    e:int = 100    -    12
-    f:int = 0.1
-    makes_noise:bool = False
+# Prueba de numeros
+# 1234            56
+# 0123
+# 0   123
+# 34.234
+# 9576=34
 
-    def make_noise(self: "Animal") -> object:
-        if (self.makes_noise):
-            print(self.sound())
+# Prueba de strings
+# "hola"        "1as"
+# "esto esta mal""
+# "34b34jh3_*?¡"
+# "345"="easd"
+# "final"
 
-    def sound(self: "Animal") -> str:
-        return "???"
+# Prueba de operadores
+# +   -       *
+# *hola+//
+# /
+# *
+# >=
 
-class Cow(Animal):
-    def __init__(self: "Cow"):                                          
-        self.makes_noise = True
+# Prueba de palabras reservadas
+# class       def
+# self+else   class1
+# False false
+# assert
+# int
 
-    def sound(self: "Cow") -> str:
-        return "moo"
-
-c:Animal = None
-c = Cow()
-c.make_noise()             # Prints "moo"
+# Prueba de Ids
+id1         hola_1
+1id
+_____
+hola=abs
+id.uno
+final

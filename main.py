@@ -39,7 +39,7 @@ with open(file = 'chocopy_example.py') as f:
                     while indentation_level < indentation_last_level:
                         indentation_last_level = indentation_stack.get()
                         print("<DEDENT>")
-                    print("<DEDENT>")
                     indentation_stack.put(indentation_level) 
+                
                 analizer.transition_function(line, line_number, column_number)
                 break
