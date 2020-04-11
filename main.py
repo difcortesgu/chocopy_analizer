@@ -2,10 +2,16 @@ from queue import LifoQueue
 import analizer
 import sys
 
-with open(file = 'chocopy_example.py') as f:
+CRED = '\033[91m'
+CEND = '\033[0m'
+
+if len(sys.argv) >= 2:
+    f = sys.argv[1]
+else:
+    sys.exit(CRED +"Error: Debe pasar el nombre del archivo como argumento"+ CEND)
+
+with open(file = f) as f:
     
-    CRED = '\033[91m'
-    CEND = '\033[0m'
     tab_size = 4
     indentation_stack = LifoQueue()
     indentation_stack.put(0) 

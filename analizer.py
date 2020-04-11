@@ -36,12 +36,12 @@ operators = {'+':"tk_suma", '-':"tk_resta", '*':"tk_mult", '//':"tk_div_entera",
 
 def transition_function (string, line_number, column_number = 0):
     
-    if column_number >= len(string) or string[column_number] == '#' or string[column_number] == '\n' or string[column_number] == '\r': 
-        return # Check for a commented line or end line 
-    
     #Read all extra spaces
-    while string[column_number] == ' ' or string[column_number] == '\t':
+    while column_number < len(string) and (string[column_number]== ' ' or string[column_number] == '\t'):
         column_number += 1
+     
+    if column_number >= len(string) or string[column_number] == '#' or string[column_number] == '\n' or string[column_number] == '\r': 
+        return # Check for a commented line or end line or end of file
 
     token = check_number(string, line_number, column_number)
     if token['lexema']:
