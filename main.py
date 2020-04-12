@@ -10,7 +10,7 @@ if len(sys.argv) >= 2:
 else:
     sys.exit(CRED +"Error: Debe pasar el nombre del archivo como argumento"+ CEND)
 
-with open(file = f) as f:
+with open(file = f, encoding='latin-1') as f:
     
     tab_size = 4
     indentation_stack = LifoQueue()

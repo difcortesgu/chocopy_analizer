@@ -4,7 +4,7 @@ import re
 CRED = '\033[91m'
 CEND = '\033[0m'
 MAX_INT = 2147483647
-STRING_REGEX = re.compile('[\x20-\x7E\\\n\t\"]')
+STRING_REGEX = re.compile('[\x20-\x7E\n\t]')
 KEYWORDS = {'a' : ['and','as','assert','async','await'], 
             'b' : ['bool','break'], 
             'c' : ['class','continue'],
@@ -48,7 +48,7 @@ def transition_function (string, line_number, column_number = 0):
         print('<NUMBER, ' + token['lexema'] + ', ' + str(line_number + 1) + ', ' + str(column_number+1) + '>')
         return transition_function(string, line_number, token['next'])
     
-    token = check_string(string, column_number)
+    token = check_string(string, line_number, column_number)
     if token['lexema']:
         print('<STRING, ' + token['lexema'] + ', ' + str(line_number +1) + ', ' + str(column_number+1) + '>')
         return transition_function(string, line_number, token['next'])    
@@ -92,22 +92,54 @@ def check_number(string, line_number, column_number):
             sys.exit(CRED + "Error: The maximum value for a number is "+str(MAX_INT)+", line: "+str(line_number + 1)+", column: "+str(column_number + 1) + CEND)
         return {'lexema':string[column_number:final], 'next':final}
            
-def check_string(string, column_number):
+def check_string(string, line_number, column_number):
     if str.isdigit(string[column_number]):
         return {'lexema':None, 'next':None}
     final = column_number
     if string[column_number] == '\"':
         for i ,char in enumerate(string[column_number+1:]):
             if char == '\"':
-                final = column_number + i 
-                break        
-    if column_number==final:
-        return {'lexema':None, 'next':None}
-    else:
-        if STRING_REGEX.match(string[column_number:final+2]):
-            return {'lexema':string[column_number:final+2], 'next':final+2}
+                if string[column_number+i]=='\x5c':
+                    continue
+                else:
+                    final = column_number + i 
+                    break        
+        if column_number==final:
+            #return {'lexema':None, 'next':None}
+            sys.exit(CRED + "Error: A \" symbol must close the ' "+string[column_number]+" ' symbol of the line: "+str(line_number +1)+" and column: "+str(column_number+1) + CEND)
         else:
-            return {'lexema':None, 'next':None}
+            i = 0
+            is_string = True
+            actual_string=string[column_number+1:final+1]
+            while i < len(actual_string):
+                if actual_string[i] == '\x5c':
+                    if actual_string[i+1] =='\x5c':
+                        counter = 0
+                        for j,char in enumerate(actual_string[i+1:]):
+                            if char == '\x5c':
+                                counter += 1
+                            else:
+                                break
+                        print(counter)
+                        if counter<3 or counter%2==0:
+                            is_string = False
+                            sys.exit(CRED + "Error: Unrecognized symbol '"+string[column_number+i+counter]+"', line: "+str(line_number +1)+", column: "+str(column_number+i+counter) + CEND)
+                        else:
+                            i += counter
+                    elif actual_string[i+1] =='\x22':
+                        i += 1
+                    else:
+                        sys.exit(CRED + "Error: Unrecognized symbol '"+string[column_number+i+1]+"', line: "+str(line_number +1)+", column: "+str(column_number+i+2) + CEND)
+                elif not STRING_REGEX.match(actual_string[i]):
+                    is_string = False
+                    sys.exit(CRED + "Error: Unrecognized symbol '"+string[column_number+i+1]+"', line: "+str(line_number +1)+", column: "+str(column_number+2+i) + CEND)
+                i += 1
+            if is_string:
+                return {'lexema':string[column_number:final+2], 'next':final+2}
+            else:
+                return {'lexema':None, 'next':None}
+    else:
+        return {'lexema':None, 'next':None}
 
 def check_operator(string, column_number):
     sig = column_number + 1
