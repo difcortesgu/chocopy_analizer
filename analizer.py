@@ -102,12 +102,12 @@ class SyntaxAnalizer:
 
         token = self.check_number(column_number)
         if token['lexema']:
-            self.nextTokens.put(Token('NUMBER', token['lexema'], self.line_number+1, column_number+1))
+            self.nextTokens.put(Token('tk_number', token['lexema'], self.line_number+1, column_number+1))
             return self.transition_function(token['next'])
         
         token = self.check_string(column_number)
         if token['lexema']:
-            self.nextTokens.put(Token('STRING', token['lexema'], self.line_number+1, column_number+1))
+            self.nextTokens.put(Token('tk_string', token['lexema'], self.line_number+1, column_number+1))
             return self.transition_function(token['next'])    
         
         token = self.check_operator(column_number)
@@ -122,7 +122,7 @@ class SyntaxAnalizer:
         
         token = self.check_id(column_number)
         if token['lexema']:
-            self.nextTokens.put(Token('ID', token['lexema'], self.line_number+1, column_number+1))
+            self.nextTokens.put(Token('tk_id', token['lexema'], self.line_number+1, column_number+1))
             return self.transition_function(token['next'])
 
         sys.exit(self.CRED + "Error: Unrecognized symbol '"+char+"', line: "+str(self.line_number +1)+", column: "+str(column_number+1) + self.CEND)
