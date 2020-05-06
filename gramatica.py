@@ -138,12 +138,12 @@ grammar = {
             [],
             []
         ],
-    'ELSE': [
-            [], 
-            [['tk_else','tk_dos_puntos','BLOCK'], ['e']],
-            [],
-            [] 
-        ],
+    #'ELSE': [
+    #        [], 
+    #        [['tk_else','tk_dos_puntos','BLOCK'], ['e']],
+    #        [],
+    #        [] 
+    #    ],
     #'SIMPLE_STMT': [
     #        [], 
     #        [['tk_pass'], ['EXPR'], ['tk_return','OPT_EXPR'], ['L_TARGET','EXPR']],
@@ -275,33 +275,34 @@ def recursive(no_terminal):
         first_ones[i] = get_the_first_ones(no_terminal[1][i])
     return first_ones
 
+def get_first_value(arr):
+    return arr[0]
+
 def get_grammar():
     for key in grammar:
         no_terminal_def=grammar[key]
         for i in range(len(no_terminal_def[1])):
             result = get_the_first_ones(no_terminal_def[1][i])
-            if type(result[0][0]) == list:
-                no_terminal_def[2].append(result[0][0][0])
-            elif type(result[0]) == list:
-                no_terminal_def[2].append(result[0][0])
-            elif type(result)== str:
+            if type(result)==str:
                 no_terminal_def[2].append(result)
             else:
-                no_terminal_def[2].append(result[0])
+                tmp = result[0]
+                while(type(tmp)!=str):
+                    tmp = get_first_value(tmp)
+                no_terminal_def[2].append(tmp)
     for key in grammar:
         grammar[key][3].append(recursive_next(key))
     for key in grammar:
-        conjunto = set
-        primeros = set(grammar[key][2])
-        siguientes = set(grammar[key][3][0])
+        primeros = grammar[key][2]
+        siguientes = grammar[key][3][0]
         for primero in primeros:
-            primero_set = {primero}
-            if 'e' in primero_set:
-                primero_set.remove('e')
-                conjunto = primero_set | siguientes
+            conjunto = []
+            if 'e' == primero:
+                conjunto = siguientes              
+                grammar[key][0].append(set(conjunto))
             else:
-                conjunto = primero_set
-                grammar[key][0].append(conjunto)
+                conjunto.append(primero)
+                grammar[key][0].append(set(conjunto))
     return grammar
 
 def recursive_next(no_terminal):
