@@ -1,4 +1,4 @@
-from gramatica import gramatic
+from gramatica import get_grammar
 
 def isNonTerminal(simbolo):
     # definir si el simbolo es un terminal o no
@@ -69,6 +69,7 @@ def syntaxisError(token, tokens_esperados):
     sys.exit(error_message)'''
 
     f.write(main)
-    for key, value in gramatic.items():
+    grammar = get_grammar()
+    for key, value in grammar.items():
         func = non_terminal_function(key, value[0], value[1])
         f.write(func)
