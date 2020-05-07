@@ -1,4 +1,5 @@
-from analizer import SyntaxAnalizer
+from lexical_analizer import LexicalAnalizer
+from syntax_analizer import SyntaxAnalizer
 from os import path
 import sys
 
@@ -13,9 +14,11 @@ if __name__ == "__main__":
     if not path.isfile(f):
         sys.exit(CRED +'Error: El archivo especificado no existe'+ CEND)
 
-    syntax_analizer = SyntaxAnalizer(f, 4)
-    eof = False 
-    while(input() != 'a' and not eof):
-        token = syntax_analizer.next_token()
-        if token.id == 'EOF': eof = True
-        print(token.toString())
+    lexical_analizer = LexicalAnalizer(f, 4)
+    syntax_analizer = SyntaxAnalizer(f)
+    syntax_analizer.analize()
+    # eof = False 
+    # while(not eof):
+    #     token = lexical_analizer.next_token()
+    #     if token.id == 'tk_eof': eof = True
+    #     print(token.toString())
