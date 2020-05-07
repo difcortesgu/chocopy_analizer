@@ -284,12 +284,17 @@ def get_grammar():
         for i in range(len(no_terminal_def[1])):
             result = get_the_first_ones(no_terminal_def[1][i])
             if type(result)==str:
-                no_terminal_def[2].append(result)
+                no_terminal_def[2].append([result])
             else:
                 tmp = result[0]
+                tmp2= result
                 while(type(tmp)!=str):
                     tmp = get_first_value(tmp)
-                no_terminal_def[2].append(tmp)
+                    tmp2 = get_first_value(tmp2)
+                if len(tmp2)>1:
+                    no_terminal_def[2].append(tmp2)
+                else:
+                    no_terminal_def[2].append([tmp])
     for key in grammar:
         grammar[key][3].append(recursive_next(key))
     for key in grammar:
@@ -297,11 +302,11 @@ def get_grammar():
         siguientes = grammar[key][3][0]
         for primero in primeros:
             conjunto = []
-            if 'e' == primero:
-                conjunto = siguientes              
+            if ['e'] == primero:
+                conjunto = siguientes            
                 grammar[key][0].append(set(conjunto))
             else:
-                conjunto.append(primero)
+                conjunto=primero
                 grammar[key][0].append(set(conjunto))
     return grammar
 
@@ -321,7 +326,7 @@ def recursive_next(no_terminal):
                     elif j+1==len(alpha):
                         tmp = j
                     if isNonTerminal(alpha[tmp]):            
-                        next_ones_tmp=grammar[alpha[tmp]][2]
+                        next_ones_tmp=transform_to_list(grammar[alpha[tmp]][2])
                         for k in range(len(next_ones_tmp)):
                             if next_ones_tmp[k] not in next_ones and next_ones_tmp[k] != 'e':
                                 next_ones.append(next_ones_tmp[k])
@@ -336,8 +341,15 @@ def recursive_next(no_terminal):
                     else:
                         next_ones.append(alpha[tmp])        
     return next_ones
-
-
+    
+def transform_to_list(list_of_list):
+    list_trans = []
+    if len(list_of_list)>1:
+        for ind_list in list_of_list:
+            list_trans.extend(ind_list) 
+    else:
+        list_trans=list_of_list
+    return list_trans
 
 """ gramatic = {
     'PROGRAM': [
