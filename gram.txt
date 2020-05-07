@@ -1,0 +1,29 @@
+    'L_EXPR': [
+            [], 
+            [['tk_coma','EXPR','L_EXPR'],
+            ['e']],
+            [],
+            [] 
+        ],
+    'IL_EXPR': [
+            [], 
+            [['EXPR', 'L_EXPR']],
+            [],
+            [] 
+        ],
+    'CEXPR__': [
+            [], 
+            [['CEXPR_'], 
+            ['tk_par_izq', 'IL_EXPR', 'tk_par_der', 'CEXPR_']],
+            [],
+            [] 
+        ],
+    'CEXPR_': [
+            [], 
+            [['BIN_OP', 'CEXPR', 'CEXPR_'], 
+            ['tk_id', 'CEXPR_'],
+            ['LITERAL', 'CEXPR_'],
+            ['e']],
+            [],
+            [] 
+        ]
