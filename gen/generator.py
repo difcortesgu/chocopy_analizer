@@ -21,7 +21,7 @@ def non_terminal_function(no_terminal, conjuntos, reglas):
             if_statement += " or self.token.id == \'{prediccion}\'".format(prediccion = prediccion)
         if_statement += ":\n"  
         if_body = ""
-        if not regla:
+        if regla == 'e':
             if_body = "\t\t\tpass\n"
         else:                
             for simbolo in regla:
@@ -61,7 +61,7 @@ class SyntaxAnalizer:
 \t\terror_message = self.CRED + "Error: Unexpected token '"+self.token.lexema+"' expecting "
 \t\tfor x in tokens_esperados:
 \t\t\terror_message += "'" + x + "' "
-\t\terror_message = ", line: "+str(self.token.line_number)+", column: "+str(self.token.column_number) + self.CEND
+\t\terror_message += ", line: "+str(self.token.line_number)+", column: "+str(self.token.column_number) + self.CEND
 \t\tsys.exit(error_message)'''.format(tab_size = 4, initial_node = "PROGRAM"))
     
     grammar = get_grammar()
