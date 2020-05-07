@@ -3,7 +3,7 @@ from lexical_token import Token
 import sys
 import re
 
-class SyntaxAnalizer:
+class LexicalAnalizer:
     
     def __init__(self, filename, tab_size):
         self.tab_size = tab_size
@@ -47,9 +47,15 @@ class SyntaxAnalizer:
     def next_token(self):
         while self.nextTokens.empty() and self.line_number < len(self.file):
             self.next_line_tokens()
-        if self.line_number >= len(self.file):
-            return Token('EOF')
-        return self.nextTokens.get()
+        if self.nextTokens.empty():
+            return Token('tk_eof')
+        token = self.nextTokens.get()
+        if token.id == 'ERROR':
+            self.lexical_error(token)
+        return token
+
+    def lexical_error(self, error_token):
+        sys.exit(self.CRED + "Error: "+ error_token.lexema +", line: "+str( error_token.line_number )+", column: "+str(error_token.column_number) + self.CEND)
 
     def next_line_tokens(self):
         indentation_level = 0
@@ -66,15 +72,15 @@ class SyntaxAnalizer:
                 indentation_level += self.tab_size
                 column_number += self.tab_size
             else:
-                self.nextTokens.put(Token('NEWLINE'))
+                self.nextTokens.put(Token('tk_newline'))
                 #Logic to check the indentation level
                 #The indentation must be a multiple of TAB_SIZE
                 if indentation_level % self.tab_size != 0:
-                    sys.exit(self.CRED +"Error: Indentation error, line: "+str(self.line_number)+", column: "+str(column_number)+ self.CEND)
+                    self.nextTokens.put(Token('ERROR', 'Indentation error', self.line_number, column_number))
                 indentation_last_level = self.indentation_stack.get()       
                 if indentation_level > indentation_last_level: 
                     #add a new indentation level
-                    self.nextTokens.put(Token('INDENT'))
+                    self.nextTokens.put(Token('tk_indent'))
                     self.indentation_stack.put(indentation_last_level)
                     self.indentation_stack.put(indentation_level)
                 elif indentation_level == indentation_last_level: 
@@ -84,7 +90,7 @@ class SyntaxAnalizer:
                     #remove from the indentation stack until the desired level is reached
                     while indentation_level < indentation_last_level:
                         indentation_last_level = self.indentation_stack.get()
-                        self.nextTokens.put(Token('DEDENT'))
+                        self.nextTokens.put(Token('tk_dedent'))
                     self.indentation_stack.put(indentation_level)
                 column_number = self.transition_function(column_number)
         self.line_number += 1
@@ -117,7 +123,7 @@ class SyntaxAnalizer:
 
         token = self.check_special_word(column_number)
         if token['lexema']:
-            self.nextTokens.put(Token(token['lexema'], token['lexema'], self.line_number+1, column_number+1))
+            self.nextTokens.put(Token('tk_'+token['lexema'], token['lexema'], self.line_number+1, column_number+1))
             return self.transition_function(token['next'])
         
         token = self.check_id(column_number)
@@ -125,7 +131,8 @@ class SyntaxAnalizer:
             self.nextTokens.put(Token('tk_id', token['lexema'], self.line_number+1, column_number+1))
             return self.transition_function(token['next'])
 
-        sys.exit(self.CRED + "Error: Unrecognized symbol '"+char+"', line: "+str(self.line_number +1)+", column: "+str(column_number+1) + self.CEND)
+        self.nextTokens.put(Token('ERROR', "Unrecognized symbol '"+char+"'", self.line_number + 1, column_number +1 ))
+        return len(self.file[self.line_number])+1
 
     def check_number(self, column_number):
         string = self.file[self.line_number]
@@ -135,7 +142,8 @@ class SyntaxAnalizer:
             final = column_number                
             if int(string[column_number]) == 0:
                 if str.isdigit(string[column_number +1]):
-                    sys.exit(self.CRED + "Error: A number can't have leading ceros, line: "+str(self.line_number + 1)+", column: "+str(column_number + 1) + self.CEND)
+                    self.nextTokens.put(Token('ERROR', "A number can't have leading ceros", self.line_number + 1, column_number +1 ))
+                    return {'lexema':None, 'next':None}
                 final = column_number + 1
             else:
                 for i ,char in enumerate(string[column_number:]):
@@ -144,10 +152,12 @@ class SyntaxAnalizer:
                 final = column_number + i
                 if str.isdigit(char):
                     if int(string[column_number:]) > self.MAX_INT:
-                        sys.exit(self.CRED + "Error: The maximum value for a number is "+str(self.MAX_INT)+", line: "+str(self.line_number + 1)+", column: "+str(column_number + 1) + self.CEND)
+                        self.nextTokens.put(Token('ERROR', "The maximum value for a number is "+str(self.MAX_INT), self.line_number + 1, column_number +1 ))
+                        return {'lexema':None, 'next':None}
                     return {'lexema':string[column_number:], 'next':final+1}
             if int(string[column_number:final]) > self.MAX_INT:
-                sys.exit(self.CRED + "Error: The maximum value for a number is "+str(self.MAX_INT)+", line: "+str(self.line_number + 1)+", column: "+str(column_number + 1) + self.CEND)
+                self.nextTokens.put(Token('ERROR', "The maximum value for a number is "+str(self.MAX_INT), self.line_number + 1, column_number +1 ))
+                return {'lexema':None, 'next':None}
             return {'lexema':string[column_number:final], 'next':final}
            
     def check_string(self, column_number):
@@ -164,8 +174,8 @@ class SyntaxAnalizer:
                         final = column_number + i 
                         break        
             if column_number==final:
-                #return {'lexema':None, 'next':None}
-                sys.exit(self.CRED + "Error: A \" symbol must close the ' "+string[column_number]+" ' symbol of the line: "+str(self.line_number +1)+" and column: "+str(column_number+1) + self.CEND)
+                self.nextTokens.put(Token('ERROR', "A \" symbol must close the ' "+string[column_number]+" ' symbol of the line: "+str(self.line_number +1)+" and column: "+str(column_number+1), self.line_number + 1, column_number +1 ))
+                return {'lexema':None, 'next':None}
             else:
                 i = 0
                 is_string = True
@@ -181,16 +191,17 @@ class SyntaxAnalizer:
                                     break
                             if counter<3 or counter%2==0:
                                 is_string = False
-                                sys.exit(self.CRED + "Error: Unrecognized symbol '"+string[column_number+i+counter]+"', line: "+str(self.line_number +1)+", column: "+str(column_number+i+counter) + self.CEND)
+                                self.nextTokens.put(Token('ERROR', "Unrecognized symbol '"+string[column_number+i+counter]+"'", self.line_number + 1, column_number+i+counter ))
                             else:
                                 i += counter
                         elif actual_string[i+1] =='\x22':
                             i += 1
                         else:
-                            sys.exit(self.CRED + "Error: Unrecognized symbol '"+string[column_number+i+1]+"', line: "+str(self.line_number +1)+", column: "+str(column_number+i+2) + self.CEND)
+                            is_string = False
+                            self.nextTokens.put(Token('ERROR', "Unrecognized symbol '"+string[column_number+i+1]+"'", self.line_number + 1, column_number +i+2 ))
                     elif not self.STRING_REGEX.match(actual_string[i]):
                         is_string = False
-                        sys.exit(self.CRED + "Error: Unrecognized symbol '"+string[column_number+i+1]+"', line: "+str(self.line_number +1)+", column: "+str(column_number+2+i) + self.CEND)
+                        self.nextTokens.put(Token('ERROR', "Unrecognized symbol '"+string[column_number+i+1]+"'", self.line_number + 1, column_number +i+2 ))
                     i += 1
                 if is_string:
                     return {'lexema':string[column_number:final+2], 'next':final+2}
