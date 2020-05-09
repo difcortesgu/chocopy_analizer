@@ -33,7 +33,7 @@ def non_terminal_function(no_terminal, conjuntos, reglas):
     func += "\t\telse:\n\t\t\tself.syntaxError(tokens_esperados)"
     return func
 
-with open(file = '../syntax_analizer.py', encoding='latin-1', mode='w') as f:
+with open(file = 'syntax_analizer.py', encoding='latin-1', mode='w') as f:
     f.write('''from lexical_analizer import LexicalAnalizer
 from os import path
 import sys

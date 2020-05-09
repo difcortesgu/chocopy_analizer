@@ -1,269 +1,509 @@
 grammar = {
-    'PROGRAM': [
-        [],
-        [
-            ['GLOBAL_DECL', 'PROGRAM'],
-            ['NONLOCAL_DECL', 'PROGRAM'],
-            ['LITERAL', 'PROGRAM'],
-            ['BIN_OP', 'PROGRAM'],
-            ['VAR_DEF', 'PROGRAM'],
-            ['EXPR', 'PROGRAM']
-        ],[],[]
+  'PROGRAM': [
+    [],
+    [
+      ['L_DEF', 'L_STMT']
     ],
-    'EXPR': [
-        [],
-        [
-            ['CEXPR', 'EXPR_'],
-            ['tk_not', 'EXPR', 'EXPR_']
-        ],[],[]
+    [],
+    []
+  ],
+  'L_DEF': [
+    [],
+    [
+      ['VAR_DEF', 'L_DEF'],
+      ['FUNC_DEF', 'L_DEF'],
+      ['CLASS_DEF', 'L_DEF'],
+      ['e']
     ],
-    'EXPR_': [
-        [],
-        [   
-            ['tk_and', 'EXPR', 'EXPR_'],
-            ['tk_or', 'EXPR', 'EXPR_'],
-            ['tk_if', 'EXPR', 'tk_else', 'EXPR', 'EXPR_'],
-            ['e']
-        ],[],[]
+    [],
+    []
+  ],
+  'L_STMT': [
+    [],
+    [
+      ['STMT', 'L_STMT'],
+      ['e']
     ],
-    'CEXPR': [
-        [],
-        [
-            ['tk_par_izq', 'EXPR', 'tk_par_der', 'CEXPR_', 'CEXPR___'],
-            ['tk_id', 'tk_par_izq', 'IL_EXPR', 'tk_par_der', 'CEXPR_', 'CEXPR___'],
-            ['tk_resta', 'CEXPR', 'CEXPR_', 'CEXPR___'],
-            ['CEXPR_', 'CEXPR___']
-        ],[],[]
+    [],
+    []
+  ],
+  'VAR_DEF': [
+    [],
+    [
+      ['TYPED_VAR', 'tk_asignacion', 'LITERAL', 'tk_newline']
     ],
-    'CEXPR___': [
-        [],
-        [
-            ['EXPR_', 'L_EXPR', 'CEXPR_', 'CEXPR___'],
-            ['tk_punto', 'tk_id', 'CEXPR__', 'CEXPR___'],
-            ['tk_corchete_izq', 'EXPR', 'tk_corchete_der', 'CEXPR_', 'CEXPR___'],
-            ['e']
-        ],[],[]
+    [],
+    []
+  ],
+  'FUNC_DEF': [
+    [],
+    [
+      ['tk_def', 'tk_id', 'tk_par_izq', 'IL_TYPED_VAR', 'tk_par_der', 'OPT_TYPE', 'tk_dos_puntos', 'tk_newline', 'tk_indent', 'FUNC_BODY', 'tk_dedent']
     ],
-    'CEXPR_': [
-        [], 
-        [
-            ['BIN_OP', 'CEXPR', 'CEXPR_'], 
-            ['tk_id', 'CEXPR_'],
-            ['LITERAL', 'CEXPR_'],
-            ['e']
-        ],[],[] 
+    [],
+    []
+  ],
+  'CLASS_DEF': [
+    [],
+    [
+      ['tk_class', 'tk_id', 'tk_par_izq', 'tk_id', 'tk_par_der', 'tk_dos_puntos', 'tk_newline', 'tk_indent', 'CLASS_BODY', 'tk_dedent']
     ],
-    'CEXPR__': [
-        [], 
-        [
-            ['CEXPR_'], 
-            ['tk_par_izq', 'IL_EXPR', 'tk_par_der', 'CEXPR_']
-        ],[],[] 
+    [],
+    []
+  ],
+  'STMT': [
+    [],
+    [
+      ['SIMPLE_STMT', 'tk_newline'],
+      ['tk_if', 'EXPR', 'tk_dos_puntos', 'BLOCK', 'L_ELIF', 'ELSE'],
+      ['tk_while', 'EXPR', 'tk_dos_puntos', 'BLOCK'],
+      ['tk_for', 'tk_id', 'tk_in', 'EXPR', 'tk_dos_puntos', 'BLOCK']
     ],
-    'IL_EXPR': [
-        [], 
-        [
-            ['EXPR', 'L_EXPR']
-        ],[],[] 
+    [],
+    []
+  ],
+  'TYPED_VAR': [
+    [],
+    [
+      ['tk_id', 'tk_dos_puntos', 'TYPE']
     ],
-    'L_EXPR': [
-        [], 
-        [
-            ['tk_coma','EXPR','L_EXPR'],
-            ['e']
-        ],[],[] 
+    [],
+    []
+  ],
+  'LITERAL': [
+    [],
+    [
+      ['tk_None'],
+      ['tk_True'],
+      ['tk_False'],
+      ['tk_number'],
+      ['tk_idstring'],
+      ['tk_string']
     ],
-    'GLOBAL_DECL': [
-        [],
-        [
-            ['tk_global', 'tk_id', 'tk_newline']
-        ],[],[]
+    [],
+    []
+  ],
+  'IL_TYPED_VAR': [
+    [],
+    [
+      ['e'],
+      ['tk_id', 'tk_dos_puntos', 'TYPE', 'L_TYPED_VAR']
     ],
-    'NONLOCAL_DECL': [
-        [],
-        [
-            ['tk_nonlocal', 'tk_id', 'tk_newline']
-        ],[],[]
+    [],
+    []
+  ],
+  'OPT_TYPE': [
+    [],
+    [
+      ['tk_ejecuta', 'TYPE'],
+      ['e']
     ],
-    'LITERAL': [
-        [],
-        [
-            ['tk_None'],
-            ['tk_True'],
-            ['tk_False'],
-            ['tk_number'],
-            ['tk_idstring'],
-            ['tk_string']
-        ],[],[]
+    [],
+    []
+  ],
+  'FUNC_BODY': [
+    [],
+    [
+      ['L_FUNC_BODY', 'L_FUNC_STMT']
     ],
-    'BIN_OP': [
-        [],
-        [
-            ['tk_suma'],
-            ['tk_resta'],
-            ['tk_mult'],
-            ['tk_div_entera'],
-            ['tk_modulo'],
-            ['tk_igual'],
-            ['tk_diferente'],
-            ['tk_menor_igual'],
-            ['tk_mayor_igual'],
-            ['tk_menor_que'],
-            ['tk_mayor_que'],
-            ['tk_is']
-        ],[],[]
+    [],
+    []
+  ],
+  'CLASS_BODY': [
+    [],
+    [
+      ['tk_pass', 'tk_newline'],
+      ['L_CLASS_BODY']
     ],
-    'VAR_DEF': [
-        [],
-        [
-            ['TYPED_VAR', 'tk_asignacion', 'LITERAL', 'tk_newline']
-        ],[],[]
+    [],
+    []
+  ],
+  'SIMPLE_STMT': [
+    [],
+    [
+      ['tk_pass'],
+      ['EXPR'],
+      ['tk_return', 'OPT_EXPR'],
+      ['L_TARGET', 'EXPR']
     ],
-    'TYPED_VAR': [
-        [],
-        [
-            ['tk_id', 'tk_dos_puntos', 'TYPE']
-        ],[],[]
+    [],
+    []
+  ],
+  'EXPR': [
+    [],
+    [
+      ['CEXPR', 'EXPR_'],
+      ['tk_not', 'EXPR', 'EXPR_']
     ],
-    'TYPE': [
-        [],
-        [
-            ['tk_id'],
-            ['tk_idstring'],
-            ['tk_corchete_izq', 'TYPE', 'tk_corchete_der']
-        ],[],[]
-    ]
+    [],
+    []
+  ],
+  'BLOCK': [
+    [],
+    [
+      ['tk_newline', 'tk_indent', 'L_FUNC_STMT', 'tk_dedent']
+    ],
+    [],
+    []
+  ],
+  'L_ELIF': [
+    [],
+    [
+      ['tk_elif', 'EXPR', 'tk_dos_puntos', 'BLOCK', 'L_ELIF'],
+      ['e']
+    ],
+    [],
+    []
+  ],
+  'ELSE': [
+    [],
+    [
+      ['tk_else', 'tk_dos_puntos', 'BLOCK'],
+      ['e']
+    ],
+    [],
+    []
+  ],
+  'TYPE': [
+    [],
+    [
+      ['tk_id'],
+      ['tk_idstring'],
+      ['tk_corchete_izq', 'TYPE', 'tk_corchete_der']
+    ],
+    [],
+    []
+  ],
+  'L_TYPED_VAR': [
+    [],
+    [
+      ['tk_coma', 'TYPED_VAR', 'L_TYPED_VAR'],
+      ['e']
+    ],
+    [],
+    []
+  ],
+  'L_FUNC_BODY': [
+    [],
+    [
+      ['GLOBAL_DECL', 'L_FUNC_BODY'],
+      ['NONLOCAL_DECL', 'L_FUNC_BODY'],
+      ['e'],
+      ['tk_id', 'tk_dos_puntos', 'TYPE', 'tk_asignacion', 'LITERAL', 'tk_newline', 'L_FUNC_BODY'],
+      ['tk_def', 'tk_id', 'tk_par_izq', 'IL_TYPED_VAR', 'tk_par_der', 'OPT_TYPE', 'tk_dos_puntos', 'tk_newline', 'tk_indent', 'FUNC_BODY', 'tk_dedent', 'L_FUNC_BODY']
+    ],
+    [],
+    []
+  ],
+  'L_FUNC_STMT': [
+    [],
+    [
+      ['tk_if', 'EXPR', 'tk_dos_puntos', 'BLOCK', 'L_ELIF', 'ELSE', 'L_FUNC_STMT_'],
+      ['tk_while', 'EXPR', 'tk_dos_puntos', 'BLOCK', 'L_FUNC_STMT_'],
+      ['tk_for', 'tk_id', 'tk_in', 'EXPR', 'tk_dos_puntos', 'BLOCK', 'L_FUNC_STMT_'],
+      ['tk_pass', 'tk_newline', 'L_FUNC_STMT_'],
+      ['tk_return', 'OPT_EXPR', 'tk_newline', 'L_FUNC_STMT_'],
+      ['L_TARGET', 'EXPR', 'tk_newline', 'L_FUNC_STMT_'],
+      ['CEXPR', 'EXPR_', 'tk_newline', 'L_FUNC_STMT_'],
+      ['tk_not', 'EXPR', 'EXPR_', 'tk_newline', 'L_FUNC_STMT_']
+    ],
+    [],
+    []
+  ],
+  'L_CLASS_BODY': [
+    [],
+    [
+      ['tk_id', 'tk_dos_puntos', 'TYPE', 'tk_asignacion', 'LITERAL', 'tk_newline', 'L_CLASS_BODY_'],
+      ['tk_def', 'tk_id', 'tk_par_izq', 'IL_TYPED_VAR', 'tk_par_der', 'OPT_TYPE', 'tk_dos_puntos', 'tk_newline', 'tk_indent', 'FUNC_BODY', 'tk_dedent', 'L_CLASS_BODY_']
+    ],
+    [],
+    []
+  ],
+  'OPT_EXPR': [
+    [],
+    [
+      ['e'],
+      ['CEXPR', 'EXPR_'],
+      ['tk_not', 'EXPR', 'EXPR_']
+    ],
+    [],
+    []
+  ],
+  'L_TARGET': [
+    [],
+    [
+      ['TARGET', 'tk_asignacion', 'L_TARGET_']
+    ],
+    [],
+    []
+  ],
+  'CEXPR': [
+    [],
+    [
+      ['tk_corchete_izq', 'IL_EXPR', 'tk_corchete_der', 'CEXPR_'],
+      ['tk_par_izq', 'EXPR', 'tk_par_der', 'CEXPR_'],
+      ['INDEX_EXPR', 'CEXPR_'],
+      ['tk_resta', 'CEXPR', 'CEXPR_'],
+      ['tk_None', 'CEXPR_'],
+      ['tk_True', 'CEXPR_'],
+      ['tk_False', 'CEXPR_'],
+      ['tk_number', 'CEXPR_'],
+      ['tk_idstring', 'CEXPR_'],
+      ['tk_string', 'CEXPR_'],
+      ['tk_id', 'CEXPR-'],
+      ['MEMBER_EXPR', 'CEXPR-']
+    ],
+    [],
+    []
+  ],
+  'GLOBAL_DECL': [
+    [],
+    [
+      ['tk_global', 'tk_id', 'tk_newline']
+    ],
+    [],
+    []
+  ],
+  'NONLOCAL_DECL': [
+    [],
+    [
+      ['tk_nonlocal', 'tk_id', 'tk_newline']
+    ],
+    [],
+    []
+  ],
+  'TARGET': [
+    [],
+    [
+      ['tk_id'],
+      ['MEMBER_EXPR'],
+      ['INDEX_EXPR']
+    ],
+    [],
+    []
+  ],
+  'IL_EXPR': [
+    [],
+    [
+      ['e'],
+      ['tk_not', 'EXPR', 'EXPR_', 'L_EXPR'],
+      ['tk_corchete_izq', 'IL_EXPR', 'tk_corchete_der', 'CEXPR_', 'EXPR_', 'L_EXPR'],
+      ['tk_par_izq', 'EXPR', 'tk_par_der', 'CEXPR_', 'EXPR_', 'L_EXPR'],
+      ['INDEX_EXPR', 'CEXPR_', 'EXPR_', 'L_EXPR'],
+      ['tk_resta', 'CEXPR', 'CEXPR_', 'EXPR_', 'L_EXPR'],
+      ['tk_None', 'CEXPR_', 'EXPR_', 'L_EXPR'],
+      ['tk_True', 'CEXPR_', 'EXPR_', 'L_EXPR'],
+      ['tk_False', 'CEXPR_', 'EXPR_', 'L_EXPR'],
+      ['tk_number', 'CEXPR_', 'EXPR_', 'L_EXPR'],
+      ['tk_idstring', 'CEXPR_', 'EXPR_', 'L_EXPR'],
+      ['tk_string', 'CEXPR_', 'EXPR_', 'L_EXPR'],
+      ['tk_id', 'IL_EXPR-'],
+      ['MEMBER_EXPR', 'IL_EXPR-']
+    ],
+    [],
+    []
+  ],
+  'MEMBER_EXPR': [
+    [],
+    [
+      ['tk_corchete_izq', 'IL_EXPR', 'tk_corchete_der', 'CEXPR_', 'tk_punto', 'tk_id', 'MEMBER_EXPR_'],
+      ['tk_par_izq', 'EXPR', 'tk_par_der', 'CEXPR_', 'tk_punto', 'tk_id', 'MEMBER_EXPR_'],
+      ['INDEX_EXPR', 'CEXPR_', 'tk_punto', 'tk_id', 'MEMBER_EXPR_'],
+      ['tk_resta', 'CEXPR', 'CEXPR_', 'tk_punto', 'tk_id', 'MEMBER_EXPR_'],
+      ['tk_None', 'CEXPR_', 'tk_punto', 'tk_id', 'MEMBER_EXPR_'],
+      ['tk_True', 'CEXPR_', 'tk_punto', 'tk_id', 'MEMBER_EXPR_'],
+      ['tk_False', 'CEXPR_', 'tk_punto', 'tk_id', 'MEMBER_EXPR_'],
+      ['tk_number', 'CEXPR_', 'tk_punto', 'tk_id', 'MEMBER_EXPR_'],
+      ['tk_idstring', 'CEXPR_', 'tk_punto', 'tk_id', 'MEMBER_EXPR_'],
+      ['tk_string', 'CEXPR_', 'tk_punto', 'tk_id', 'MEMBER_EXPR_'],
+      ['tk_id', 'MEMBER_EXPR-']
+    ],
+    [],
+    []
+  ],
+  'INDEX_EXPR': [
+      [],
+      [
+          ['tk_id', 'INDEX_EXPR_1'],
+          ['tk_corchete_izq', 'INDEX_EXPR_2'],
+          ['tk_par_izq', 'INDEX_EXPR_3'],
+          ['tk_resta', 'INDEX_EXPR_4'],
+          ['tk_None', 'INDEX_EXPR_5'],
+          ['tk_True', 'INDEX_EXPR_5'],
+          ['tk_False', 'INDEX_EXPR_5'],
+          ['tk_number', 'INDEX_EXPR_5'],
+          ['tk_string', 'INDEX_EXPR_5'],
+          ['tk_idstring', 'INDEX_EXPR_5']
+      ],[],[]
+  ],
+  'BIN_OP': [
+    [],
+    [
+      ['tk_suma'],
+      ['tk_resta'],
+      ['tk_mult'],
+      ['tk_div_entera'],
+      ['tk_modulo'],
+      ['tk_igual'],
+      ['tk_diferente'],
+      ['tk_menor_igual'],
+      ['tk_mayor_igual'],
+      ['tk_menor_que'],
+      ['tk_mayor_que'],
+      ['tk_is']
+    ],
+    [],
+    []
+  ],
+  'L_EXPR': [
+    [],
+    [
+      ['tk_coma', 'EXPR', 'L_EXPR'],
+      ['e']
+    ],
+    [],
+    []
+  ],
+  'EXPR_': [
+    [],
+    [
+      ['tk_and', 'EXPR', 'EXPR_'],
+      ['tk_or', 'EXPR', 'EXPR_'],
+      ['tk_if', 'EXPR', 'tk_else', 'EXPR', 'EXPR_'],
+      ['e']
+    ],
+    [],
+    []
+  ],
+  'L_FUNC_STMT_': [
+    [],
+    [
+      ['STMT', 'L_FUNC_STMT_'],
+      ['e']
+    ],
+    [],
+    []
+  ],
+  'L_CLASS_BODY_': [
+    [],
+    [
+      ['VAR_DEF', 'L_CLASS_BODY_'],
+      ['FUNC_DEF', 'L_CLASS_BODY_'],
+      ['e']
+    ],
+    [],
+    []
+  ],
+  'L_TARGET_': [
+    [],
+    [
+      ['TARGET', 'tk_asignacion', 'L_TARGET_'],
+      ['e']
+    ],
+    [],
+    []
+  ],
+  'CEXPR_': [
+    [],
+    [
+      ['BIN_OP', 'CEXPR', 'CEXPR_'],
+      ['e']
+    ],
+    [],
+    []
+  ],
+  'MEMBER_EXPR_': [
+    [],
+    [
+      ['CEXPR_', 'tk_punto', 'tk_id', 'MEMBER_EXPR_'],
+      ['tk_par_izq', 'IL_EXPR', 'tk_par_der', 'CEXPR_', 'tk_punto', 'tk_id', 'MEMBER_EXPR_'],
+      ['e']
+    ],
+    [],
+    []
+  ],
+  'INDEX_EXPR_': [
+    [],
+    [
+      ['e'],
+      ['CEXPR_', 'INDEX_EXPR_-']
+    ],
+    [],
+    []
+  ],
+  'CEXPR-': [
+    [],
+    [
+      ['CEXPR_'],
+      ['tk_par_izq', 'IL_EXPR', 'tk_par_der', 'CEXPR_']
+    ],
+    [],
+    []
+  ],
+  'IL_EXPR-': [
+    [],
+    [
+      ['CEXPR_', 'EXPR_', 'L_EXPR'],
+      ['tk_par_izq', 'IL_EXPR', 'tk_par_der', 'CEXPR_', 'EXPR_', 'L_EXPR']
+    ],
+    [],
+    []
+  ],
+  'MEMBER_EXPR-': [
+    [],
+    [
+      ['CEXPR_', 'tk_punto', 'tk_id', 'MEMBER_EXPR_'],
+      ['tk_par_izq', 'IL_EXPR', 'tk_par_der', 'CEXPR_', 'tk_punto', 'tk_id', 'MEMBER_EXPR_']
+    ],
+    [],
+    []
+  ],
+  'INDEX_EXPR_1': [ #id
+      [], 
+      [
+          ['INDEX_EXPR__6__'],
+          ['INDEX_EXPR_5'],
+          ['tk_par_izq', 'IL_EXPR', 'tk_par_der', 'INDEX_EXPR5_']
+      ],[],[] 
+  ],
+  'INDEX_EXPR_2': [ #corchete_izq
+      [], 
+      [
+          ['IL_EXPR', 'tk_corchete_der', 'INDEX_EXPR5_']
+      ],[],[] 
+  ],
+  'INDEX_EXPR_3': [ #tk_PAR_IZQ
+      [], 
+      [
+          ['EXPR', 'tk_par_der', 'INDEX_EXPR5_']
+      ],[],[] 
+  ],
+  'INDEX_EXPR_4': [ #tk_resta
+      [], 
+      [
+          ['CEXPR', 'INDEX_EXPR5_']
+      ],[],[] 
+  ],
+  'INDEX_EXPR_5': [ #tk_None, tk_true, tk_false, tk_numer, tk_string, tk_idstring
+      [], 
+      [
+          ['CEXPR_', 'INDEX_EXPR_6_'],
+      ],[],[] 
+  ],
+  'INDEX_EXPR_6_': [
+      [], 
+      [
+          ['tk_corchete_izq', 'EXPR', 'tk_corchete_der', 'INDEX_EXPR_'],
+          ['tk_punto', 'tk_id', 'MEMBER_EXPR_', 'INDEX_EXPR__6__']
+
+      ],[],[] 
+  ],
+  'INDEX_EXPR__6__': [
+      [], 
+      [
+          ['CEXPR_', 'tk_corchete_izq', 'EXPR', 'tk_corchete_der', 'INDEX_EXPR_'],
+          ['tk_par_izq', 'IL_EXPR', 'tk_par_der', 'CEXPR_', 'tk_corchete_izq', 'EXPR', 'tk_corchete_der', 'INDEX_EXPR_']
+
+      ],[],[] 
+  ],
 }
-#------PRIMERA ITERACION-------------------------------------------
-
-    # GLOBAL_DECL -> tk_global tk_id tk_newline
-    # NONLOCAL_DECL -> tk_nonlocal tk_id tk_newline
-    
-    # LITERAL -> tk_None
-    # LITERAL -> tk_True
-    # LITERAL -> tk_False
-    # LITERAL -> tk_number
-    # LITERAL -> tk_string
-
-    # VAR_DEF -> TYPED_VAR tk_asignacion LITERAL tk_newline
-    # TYPED_VAR -> tk_id tk_dos_puntos TYPE
-
-    # TYPE -> tk_id
-    # TYPE -> ID_STRING
-    # TYPE -> tk_corchete_izq TYPE tk_corchete_der
-#------------------------------------------------------------------
-
-
-#------SEGUNDA ITERACION-------------------------------------------
-    # EXPR -> CEXPR _EXPR
-    # EXPR -> tk_not EXPR _EXPR
-
-    # _EXPR -> tk_and EXPR _EXPR
-    # _EXPR -> tk_or EXPR _EXPR
-    # _EXPR -> tk_if EXPR tk_else EXPR _EXPR
-    # _EXPR -> e
-
-    # CEXPR -> IL_EXPR _CEXPR
-    # CEXPR -> tk_par_izq EXPR tk_par_der _CEXPR
-    # CEXPR -> MEMBER_EXPR __CEXPR
-    # CEXPR -> INDEX_EXPR _CEXPR
-    # CEXPR -> tk_id tk_par_izq IL_EXPR tk_par_der _CEXPR
-    # CEXPR -> tk_resta CEXPR _CEXPR
-    # CEXPR -> _CEXPR
-
-    # _CEXPR -> BIN_OP CEXPR _CEXPR
-    # _CEXPR -> tk_id _CEXPR
-    # _CEXPR -> LITERAL _CEXPR
-    # _CEXPR -> e
-
-    # __CEXPR -> _CEXPR
-    # __CEXPR -> tk_par_izq IL_EXPR tk_par_der _CEXPR
-
-    # IL_EXPR -> EXPR L_EXPR
-
-    # L_EXPR -> tk_coma EXPR L_EXPR
-    # L_EXPR -> e
-
-    # MEMBER_EXPR -> CEXPR tk_punto tk_id 
-
-    # INDEX_EXPR -> CEXPR tk_corchete_izq EXPR tk_corchete_der
-#------------------------------------------------------------------
-
-
-#------TERCERA ITERACION-------------------------------------------
-    # TARGET -> tk_id
-    # TARGET -> MEMBER_EXPR
-    # TARGET -> INDEX_EXPR
-    
-    # STMT -> SIMPLE_STMT tk_newline
-    # STMT -> tk_if EXPR tk_dos_puntos BLOCK L_ELIF ELSE
-    # STMT -> tk_while EXPR tk_dos_puntos BLOCK
-    # STMT -> tk_for tk_id tk_in EXPR tk_dos_puntos BLOCK
-
-    # L_ELIF -> tk_elif EXPR tk_dos_puntos BLOCK L_ELIF
-    # L_ELIF -> e
-
-    # ELSE -> tk_else tk_dos_puntos BLOCK
-    # ELSE -> e
-
-    # SIMPLE_STMT -> tk_pass
-    # SIMPLE_STMT -> EXPR
-    # SIMPLE_STMT -> tk_return OPT_EXPR
-    # SIMPLE_STMT -> L_TARGET EXPR
-
-    # L_TARGET -> TARGET tk_asignacion _L_TARGET
-
-    # _L_TARGET -> L_TARGET
-    # _L_TARGET -> e
-
-    # OPT_EXPR -> EXPR
-    # OPT_EXPR -> e
-
-    # BLOCK -> tk_newline tk_indent L_STMT tk_dedent
-#------------------------------------------------------------------
-
-#------CUARTA ITERACION-------------------------------------------
-    # PROGRAM -> L_DEF L_STMT
-
-    # L_STMT -> STMT L_STMT
-    # L_DEF -> VAR_DEF L_DEF
-    # L_DEF -> FUNC_DEF L_DEF
-    # L_DEF -> CLASS_DEF L_DEF
-    # L_STMT -> e
-    # L_DEF -> e
-
-    # CLASS_DEF -> tk_class tk_id tk_par_izq tk_id tk_par_der tk_dos_puntos tk_newline tk_indent CLASS_BODY tk_dedent
-
-    # CLASS_BODY -> tk_pass tk_newline
-    # CLASS_BODY -> L_CLASS_BODY
-
-    # L_CLASS_BODY -> VAR_DEF _L_CLASS_BODY
-    # L_CLASS_BODY -> FUNC_DEF __L_CLASS_BODY
-
-    # _L_CLASS_BODY -> L_CLASS_BODY
-    # _L_CLASS_BODY -> e
-
-    # __L_CLASS_BODY -> L_CLASS_BODY
-    # __L_CLASS_BODY -> e
-
-    # FUNC_DEF -> tk_def tk_id tk_par_izq IL_TYPED_VAR tk_par_der tk_dos_puntos tk_newline tk_indent FUNC_BODY tk_dedent
-
-    # IL_TYPED_VAR -> TYPED_VAR L_TYPED_VAR
-    # IL_TYPED_VAR -> e
-
-    # L_TYPED_VAR -> tk_coma TYPED_VAR L_TYPED_VAR
-    # L_TYPED_VAR -> e
-
-    # FUNC_BODY -> L_FUNC_BODY L_FUNC_STMT
-
-    # L_FUNC_STMT -> STMT _L_FUNC_STMT
-
-    # _L_FUNC_STMT -> L_FUNC_STMT
-    # _L_FUNC_STMT -> e
-
-    # L_FUNC_BODY -> VAR_DEF L_FUNC_BODY
-    # L_FUNC_BODY -> FUNC_DEF L_FUNC_BODY
-    # L_FUNC_BODY -> GLOBAL_DECL L_FUNC_BODY
-    # L_FUNC_BODY -> NONLOCAL_DECL L_FUNC_BODY
-    # L_FUNC_BODY -> e
-#------------------------------------------------------------------
