@@ -19,11 +19,11 @@ def non_terminal_function(no_terminal, conjuntos, reglas):
             if_statement = "\t\telif self.token.id == \'{prediccion}\'".format(prediccion = conjunto.pop())
         for prediccion in conjunto:
             if_statement += " or self.token.id == \'{prediccion}\'".format(prediccion = prediccion)
-        if_statement += ":\n"  
+        if_statement += ":\n"
         if_body = ""
         if regla == 'e':
             if_body = "\t\t\tpass\n"
-        else:                
+        else:
             for simbolo in regla:
                 if isNonTerminal(simbolo):
                     if_body += "\t\t\tself.{simbolo}()\n".format(simbolo = simbolo)
