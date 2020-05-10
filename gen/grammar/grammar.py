@@ -250,8 +250,8 @@ grammar = {
       ['tk_number', 'CEXPR_'],
       ['tk_idstring', 'CEXPR_'],
       ['tk_string', 'CEXPR_'],
-      ['tk_id', 'CEXPR-'],
-      ['MEMBER_EXPR', 'CEXPR-']
+      ['tk_id', 'CEXPRA'],
+      ['MEMBER_EXPR', 'CEXPRA']
     ],
     [],
     []
@@ -297,8 +297,8 @@ grammar = {
       ['tk_number', 'CEXPR_', 'EXPR_', 'L_EXPR'],
       ['tk_idstring', 'CEXPR_', 'EXPR_', 'L_EXPR'],
       ['tk_string', 'CEXPR_', 'EXPR_', 'L_EXPR'],
-      ['tk_id', 'IL_EXPR-'],
-      ['MEMBER_EXPR', 'IL_EXPR-']
+      ['tk_id', 'IL_EXPRA'],
+      ['MEMBER_EXPR', 'IL_EXPRA']
     ],
     [],
     []
@@ -316,7 +316,7 @@ grammar = {
       ['tk_number', 'CEXPR_', 'tk_punto', 'tk_id', 'MEMBER_EXPR_'],
       ['tk_idstring', 'CEXPR_', 'tk_punto', 'tk_id', 'MEMBER_EXPR_'],
       ['tk_string', 'CEXPR_', 'tk_punto', 'tk_id', 'MEMBER_EXPR_'],
-      ['tk_id', 'MEMBER_EXPR-']
+      ['tk_id', 'MEMBER_EXPRA']
     ],
     [],
     []
@@ -426,12 +426,12 @@ grammar = {
     [],
     [
       ['e'],
-      ['CEXPR_', 'INDEX_EXPR_-']
+      ['CEXPR_', 'INDEX_EXPR_A']
     ],
     [],
     []
   ],
-  'CEXPR-': [
+  'CEXPRA': [
     [],
     [
       ['CEXPR_'],
@@ -440,7 +440,7 @@ grammar = {
     [],
     []
   ],
-  'IL_EXPR-': [
+  'IL_EXPRA': [
     [],
     [
       ['CEXPR_', 'EXPR_', 'L_EXPR'],
@@ -449,7 +449,7 @@ grammar = {
     [],
     []
   ],
-  'MEMBER_EXPR-': [
+  'MEMBER_EXPRA': [
     [],
     [
       ['CEXPR_', 'tk_punto', 'tk_id', 'MEMBER_EXPR_'],
@@ -506,4 +506,15 @@ grammar = {
 
       ],[],[] 
   ],
+  'INDEX_EXPR_A': [
+    [],
+    [
+      ['tk_corchete_izq', 'EXPR', 'tk_corchete_der', 'INDEX_EXPR_'],
+      ['tk_punto', 'tk_id', 'MEMBER_EXPR_', 'CEXPR_', 'tk_corchete_izq', 'EXPR', 'tk_corchete_der', 'INDEX_EXPR_'],
+      ['tk_punto', 'tk_id', 'MEMBER_EXPR_', 'tk_par_izq', 'IL_EXPR', 'tk_par_der', 'CEXPR_', 'tk_corchete_izq', 'EXPR', 'tk_corchete_der', 'INDEX_EXPR_']
+    ],
+    [],
+    []
+  ]
+
 }
