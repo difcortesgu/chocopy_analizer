@@ -509,12 +509,8 @@ grammar = {
   'INDEX_EXPR_A': [
     [],
     [
-      ['tk_corchete_izq', 'EXPR', 'tk_corchete_der', 'INDEX_EXPR_'],
-      ['tk_punto', 'tk_id', 'MEMBER_EXPR_', 'CEXPR_', 'tk_corchete_izq', 'EXPR', 'tk_corchete_der', 'INDEX_EXPR_'],
-      ['tk_punto', 'tk_id', 'MEMBER_EXPR_', 'tk_par_izq', 'IL_EXPR', 'tk_par_der', 'CEXPR_', 'tk_corchete_izq', 'EXPR', 'tk_corchete_der', 'INDEX_EXPR_']
+      ['INDEX_EXPR_6_']
     ],
-    [],
-    []
+    [], []   
   ]
-
 }

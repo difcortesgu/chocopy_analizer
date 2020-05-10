@@ -94,20 +94,24 @@ def removeNCommonFactors(grammar, A, factors, n, A_):
     return grammar
 
 def removeLeftCommonFactors(grammar):
-    parseB = {i:k for i,(k,v) in enumerate(grammar.items())}
-    for i in range(len(grammar)):
-        Ai = parseB[i]
-        rules = grammar[Ai][1]
-        factor = getNextFactors(rules)
-        fi = 1
-        while factor != None:
-            n_common_factors = get_n_common_factors(factor) + 1
-            grammar = removeNCommonFactors(grammar, Ai, factor,  n_common_factors, Ai+"-"*(fi))
+    hasChanges = True
+    while hasChanges:
+        parseB = {i:k for i,(k,v) in enumerate(grammar.items())}
+        hasChanges = False            
+        for i in range(len(grammar)):
+            Ai = parseB[i]
+            rules = grammar[Ai][1]
             factor = getNextFactors(rules)
-            fi+=1
+            fi = 1
+            while factor != None:
+                hasChanges = True
+                n_common_factors = get_n_common_factors(factor) + 1
+                grammar = removeNCommonFactors(grammar, Ai, factor,  n_common_factors, Ai+str(fi))
+                factor = getNextFactors(rules)
+                fi+=1
     return grammar
 
 grammar = removeLeftRecursion(grammar)
-# grammar = removeLeftCommonFactors(grammar)
+grammar = removeLeftCommonFactors(grammar)
 print(grammar)
 

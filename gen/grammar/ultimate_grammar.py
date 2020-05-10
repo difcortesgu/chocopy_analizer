@@ -1,4 +1,4 @@
-grammar = {
+{
   'PROGRAM': [
     [],
     [
@@ -250,8 +250,8 @@ grammar = {
       ['tk_number', 'CEXPR_'],
       ['tk_idstring', 'CEXPR_'],
       ['tk_string', 'CEXPR_'],
-      ['tk_id', 'CEXPRA'],
-      ['MEMBER_EXPR', 'CEXPRA']
+      ['tk_id', 'CEXPR1'],
+      ['MEMBER_EXPR', 'CEXPR2']
     ],
     [],
     []
@@ -297,8 +297,8 @@ grammar = {
       ['tk_number', 'CEXPR_', 'EXPR_', 'L_EXPR'],
       ['tk_idstring', 'CEXPR_', 'EXPR_', 'L_EXPR'],
       ['tk_string', 'CEXPR_', 'EXPR_', 'L_EXPR'],
-      ['tk_id', 'IL_EXPRA'],
-      ['MEMBER_EXPR', 'IL_EXPRA']
+      ['tk_id', 'IL_EXPR1'],
+      ['MEMBER_EXPR', 'IL_EXPR2']
     ],
     [],
     []
@@ -316,25 +316,27 @@ grammar = {
       ['tk_number', 'CEXPR_', 'tk_punto', 'tk_id', 'MEMBER_EXPR_'],
       ['tk_idstring', 'CEXPR_', 'tk_punto', 'tk_id', 'MEMBER_EXPR_'],
       ['tk_string', 'CEXPR_', 'tk_punto', 'tk_id', 'MEMBER_EXPR_'],
-      ['tk_id', 'MEMBER_EXPRA']
+      ['tk_id', 'MEMBER_EXPR1']
     ],
     [],
     []
   ],
   'INDEX_EXPR': [
-      [],
-      [
-          ['tk_id', 'INDEX_EXPR_1'],
-          ['tk_corchete_izq', 'INDEX_EXPR_2'],
-          ['tk_par_izq', 'INDEX_EXPR_3'],
-          ['tk_resta', 'INDEX_EXPR_4'],
-          ['tk_None', 'INDEX_EXPR_5'],
-          ['tk_True', 'INDEX_EXPR_5'],
-          ['tk_False', 'INDEX_EXPR_5'],
-          ['tk_number', 'INDEX_EXPR_5'],
-          ['tk_string', 'INDEX_EXPR_5'],
-          ['tk_idstring', 'INDEX_EXPR_5']
-      ],[],[]
+    [],
+    [
+      ['tk_id', 'INDEX_EXPR1'],
+      ['tk_corchete_izq', 'IL_EXPR', 'tk_corchete_der', 'CEXPR_', 'INDEX_EXPR2'],
+      ['tk_par_izq', 'EXPR', 'tk_par_der', 'CEXPR_', 'INDEX_EXPR3'],
+      ['tk_resta', 'CEXPR', 'CEXPR_', 'INDEX_EXPR4'],
+      ['tk_None', 'CEXPR_', 'INDEX_EXPR5'],
+      ['tk_True', 'CEXPR_', 'INDEX_EXPR6'],
+      ['tk_False', 'CEXPR_', 'INDEX_EXPR7'],
+      ['tk_number', 'CEXPR_', 'INDEX_EXPR8'],
+      ['tk_idstring', 'CEXPR_', 'INDEX_EXPR9'],
+      ['tk_string', 'CEXPR_', 'INDEX_EXPR10']
+    ],
+    [],
+    []
   ],
   'BIN_OP': [
     [],
@@ -426,12 +428,12 @@ grammar = {
     [],
     [
       ['e'],
-      ['CEXPR_', 'INDEX_EXPR_A']
+      ['CEXPR_', 'INDEX_EXPR_1']
     ],
     [],
     []
   ],
-  'CEXPRA': [
+  'CEXPR1': [
     [],
     [
       ['CEXPR_'],
@@ -440,7 +442,16 @@ grammar = {
     [],
     []
   ],
-  'IL_EXPRA': [
+  'CEXPR2': [
+    [],
+    [
+      ['CEXPR_'],
+      ['tk_par_izq', 'IL_EXPR', 'tk_par_der', 'CEXPR_']
+    ],
+    [],
+    []
+  ],
+  'IL_EXPR1': [
     [],
     [
       ['CEXPR_', 'EXPR_', 'L_EXPR'],
@@ -449,7 +460,16 @@ grammar = {
     [],
     []
   ],
-  'MEMBER_EXPRA': [
+  'IL_EXPR2': [
+    [],
+    [
+      ['CEXPR_', 'EXPR_', 'L_EXPR'],
+      ['tk_par_izq', 'IL_EXPR', 'tk_par_der', 'CEXPR_', 'EXPR_', 'L_EXPR']
+    ],
+    [],
+    []
+  ],
+  'MEMBER_EXPR1': [
     [],
     [
       ['CEXPR_', 'tk_punto', 'tk_id', 'MEMBER_EXPR_'],
@@ -458,63 +478,229 @@ grammar = {
     [],
     []
   ],
-  'INDEX_EXPR_1': [ #id
-      [], 
-      [
-          ['INDEX_EXPR__6__'],
-          ['INDEX_EXPR_5'],
-          ['tk_par_izq', 'IL_EXPR', 'tk_par_der', 'INDEX_EXPR5_']
-      ],[],[] 
+  'INDEX_EXPR1': [
+    [],
+    [
+      ['CEXPR_', 'INDEX_EXPR11'],
+      ['tk_par_izq', 'IL_EXPR', 'tk_par_der', 'CEXPR_', 'INDEX_EXPR12']
+    ],
+    [],
+    []
   ],
-  'INDEX_EXPR_2': [ #corchete_izq
-      [], 
-      [
-          ['IL_EXPR', 'tk_corchete_der', 'INDEX_EXPR5_']
-      ],[],[] 
-  ],
-  'INDEX_EXPR_3': [ #tk_PAR_IZQ
-      [], 
-      [
-          ['EXPR', 'tk_par_der', 'INDEX_EXPR5_']
-      ],[],[] 
-  ],
-  'INDEX_EXPR_4': [ #tk_resta
-      [], 
-      [
-          ['CEXPR', 'INDEX_EXPR5_']
-      ],[],[] 
-  ],
-  'INDEX_EXPR_5': [ #tk_None, tk_true, tk_false, tk_numer, tk_string, tk_idstring
-      [], 
-      [
-          ['CEXPR_', 'INDEX_EXPR_6_'],
-      ],[],[] 
-  ],
-  'INDEX_EXPR_6_': [
-      [], 
-      [
-          ['tk_corchete_izq', 'EXPR', 'tk_corchete_der', 'INDEX_EXPR_'],
-          ['tk_punto', 'tk_id', 'MEMBER_EXPR_', 'INDEX_EXPR__6__']
-
-      ],[],[] 
-  ],
-  'INDEX_EXPR__6__': [
-      [], 
-      [
-          ['CEXPR_', 'tk_corchete_izq', 'EXPR', 'tk_corchete_der', 'INDEX_EXPR_'],
-          ['tk_par_izq', 'IL_EXPR', 'tk_par_der', 'CEXPR_', 'tk_corchete_izq', 'EXPR', 'tk_corchete_der', 'INDEX_EXPR_']
-
-      ],[],[] 
-  ],
-  'INDEX_EXPR_A': [
+  'INDEX_EXPR2': [
     [],
     [
       ['tk_corchete_izq', 'EXPR', 'tk_corchete_der', 'INDEX_EXPR_'],
-      ['tk_punto', 'tk_id', 'MEMBER_EXPR_', 'CEXPR_', 'tk_corchete_izq', 'EXPR', 'tk_corchete_der', 'INDEX_EXPR_'],
-      ['tk_punto', 'tk_id', 'MEMBER_EXPR_', 'tk_par_izq', 'IL_EXPR', 'tk_par_der', 'CEXPR_', 'tk_corchete_izq', 'EXPR', 'tk_corchete_der', 'INDEX_EXPR_']
+      ['tk_punto', 'tk_id', 'MEMBER_EXPR_', 'INDEX_EXPR21']
+    ],
+    [],
+    []
+  ],
+  'INDEX_EXPR3': [
+    [],
+    [
+      ['tk_corchete_izq', 'EXPR', 'tk_corchete_der', 'INDEX_EXPR_'],
+      ['tk_punto', 'tk_id', 'MEMBER_EXPR_', 'INDEX_EXPR31']
+    ],
+    [],
+    []
+  ],
+  'INDEX_EXPR4': [
+    [],
+    [
+      ['tk_corchete_izq', 'EXPR', 'tk_corchete_der', 'INDEX_EXPR_'],
+      ['tk_punto', 'tk_id', 'MEMBER_EXPR_', 'INDEX_EXPR41']
+    ],
+    [],
+    []
+  ],
+  'INDEX_EXPR5': [
+    [],
+    [
+      ['tk_corchete_izq', 'EXPR', 'tk_corchete_der', 'INDEX_EXPR_'],
+      ['tk_punto', 'tk_id', 'MEMBER_EXPR_', 'INDEX_EXPR51']
+    ],
+    [],
+    []
+  ],
+  'INDEX_EXPR6': [
+    [],
+    [
+      ['tk_corchete_izq', 'EXPR', 'tk_corchete_der', 'INDEX_EXPR_'],
+      ['tk_punto', 'tk_id', 'MEMBER_EXPR_', 'INDEX_EXPR61']
+    ],
+    [],
+    []
+  ],
+  'INDEX_EXPR7': [
+    [],
+    [
+      ['tk_corchete_izq', 'EXPR', 'tk_corchete_der', 'INDEX_EXPR_'],
+      ['tk_punto', 'tk_id', 'MEMBER_EXPR_', 'INDEX_EXPR71']
+    ],
+    [],
+    []
+  ],
+  'INDEX_EXPR8': [
+    [],
+    [
+      ['tk_corchete_izq', 'EXPR', 'tk_corchete_der', 'INDEX_EXPR_'],
+      ['tk_punto', 'tk_id', 'MEMBER_EXPR_', 'INDEX_EXPR81']
+    ],
+    [],
+    []
+  ],
+  'INDEX_EXPR9': [
+    [],
+    [
+      ['tk_corchete_izq', 'EXPR', 'tk_corchete_der', 'INDEX_EXPR_'],
+      ['tk_punto', 'tk_id', 'MEMBER_EXPR_', 'INDEX_EXPR91']
+    ],
+    [],
+    []
+  ],
+  'INDEX_EXPR10': [
+    [],
+    [
+      ['tk_corchete_izq', 'EXPR', 'tk_corchete_der', 'INDEX_EXPR_'],
+      ['tk_punto', 'tk_id', 'MEMBER_EXPR_', 'INDEX_EXPR101']
+    ],
+    [],
+    []
+  ],
+  'INDEX_EXPR_1': [
+    [],
+    [
+      ['tk_corchete_izq', 'EXPR', 'tk_corchete_der', 'INDEX_EXPR_'],
+      ['tk_punto', 'tk_id', 'MEMBER_EXPR_', 'INDEX_EXPR_11']
+    ],
+    [],
+    []
+  ],
+  'INDEX_EXPR11': [
+    [],
+    [
+      ['tk_corchete_izq', 'EXPR', 'tk_corchete_der', 'INDEX_EXPR_'],
+      ['tk_punto', 'tk_id', 'MEMBER_EXPR_', 'INDEX_EXPR111']
+    ],
+    [],
+    []
+  ],
+  'INDEX_EXPR12': [
+    [],
+    [
+      ['tk_corchete_izq', 'EXPR', 'tk_corchete_der', 'INDEX_EXPR_'],
+      ['tk_punto', 'tk_id', 'MEMBER_EXPR_', 'INDEX_EXPR121']
+    ],
+    [],
+    []
+  ],
+  'INDEX_EXPR21': [
+    [],
+    [
+      ['CEXPR_', 'tk_corchete_izq', 'EXPR', 'tk_corchete_der', 'INDEX_EXPR_'],
+      ['tk_par_izq', 'IL_EXPR', 'tk_par_der', 'CEXPR_', 'tk_corchete_izq', 'EXPR', 'tk_corchete_der', 'INDEX_EXPR_']
+    ],
+    [],
+    []
+  ],
+  'INDEX_EXPR31': [
+    [],
+    [
+      ['CEXPR_', 'tk_corchete_izq', 'EXPR', 'tk_corchete_der', 'INDEX_EXPR_'],
+      ['tk_par_izq', 'IL_EXPR', 'tk_par_der', 'CEXPR_', 'tk_corchete_izq', 'EXPR', 'tk_corchete_der', 'INDEX_EXPR_']
+    ],
+    [],
+    []
+  ],
+  'INDEX_EXPR41': [
+    [],
+    [
+      ['CEXPR_', 'tk_corchete_izq', 'EXPR', 'tk_corchete_der', 'INDEX_EXPR_'],
+      ['tk_par_izq', 'IL_EXPR', 'tk_par_der', 'CEXPR_', 'tk_corchete_izq', 'EXPR', 'tk_corchete_der', 'INDEX_EXPR_']
+    ],
+    [],
+    []
+  ],
+  'INDEX_EXPR51': [
+    [],
+    [
+      ['CEXPR_', 'tk_corchete_izq', 'EXPR', 'tk_corchete_der', 'INDEX_EXPR_'],
+      ['tk_par_izq', 'IL_EXPR', 'tk_par_der', 'CEXPR_', 'tk_corchete_izq', 'EXPR', 'tk_corchete_der', 'INDEX_EXPR_']
+    ],
+    [],
+    []
+  ],
+  'INDEX_EXPR61': [
+    [],
+    [
+      ['CEXPR_', 'tk_corchete_izq', 'EXPR', 'tk_corchete_der', 'INDEX_EXPR_'],
+      ['tk_par_izq', 'IL_EXPR', 'tk_par_der', 'CEXPR_', 'tk_corchete_izq', 'EXPR', 'tk_corchete_der', 'INDEX_EXPR_']
+    ],
+    [],
+    []
+  ],
+  'INDEX_EXPR71': [
+    [],
+    [
+      ['CEXPR_', 'tk_corchete_izq', 'EXPR', 'tk_corchete_der', 'INDEX_EXPR_'],
+      ['tk_par_izq', 'IL_EXPR', 'tk_par_der', 'CEXPR_', 'tk_corchete_izq', 'EXPR', 'tk_corchete_der', 'INDEX_EXPR_']
+    ],
+    [],
+    []
+  ],
+  'INDEX_EXPR81': [
+    [],
+    [
+      ['CEXPR_', 'tk_corchete_izq', 'EXPR', 'tk_corchete_der', 'INDEX_EXPR_'],
+      ['tk_par_izq', 'IL_EXPR', 'tk_par_der', 'CEXPR_', 'tk_corchete_izq', 'EXPR', 'tk_corchete_der', 'INDEX_EXPR_']
+    ],
+    [],
+    []
+  ],
+  'INDEX_EXPR91': [
+    [],
+    [
+      ['CEXPR_', 'tk_corchete_izq', 'EXPR', 'tk_corchete_der', 'INDEX_EXPR_'],
+      ['tk_par_izq', 'IL_EXPR', 'tk_par_der', 'CEXPR_', 'tk_corchete_izq', 'EXPR', 'tk_corchete_der', 'INDEX_EXPR_']
+    ],
+    [],
+    []
+  ],
+  'INDEX_EXPR101': [
+    [],
+    [
+      ['CEXPR_', 'tk_corchete_izq', 'EXPR', 'tk_corchete_der', 'INDEX_EXPR_'],
+      ['tk_par_izq', 'IL_EXPR', 'tk_par_der', 'CEXPR_', 'tk_corchete_izq', 'EXPR', 'tk_corchete_der', 'INDEX_EXPR_']
+    ],
+    [],
+    []
+  ],
+  'INDEX_EXPR_11': [
+    [],
+    [
+      ['CEXPR_', 'tk_corchete_izq', 'EXPR', 'tk_corchete_der', 'INDEX_EXPR_'],
+      ['tk_par_izq', 'IL_EXPR', 'tk_par_der', 'CEXPR_', 'tk_corchete_izq', 'EXPR', 'tk_corchete_der', 'INDEX_EXPR_']
+    ],
+    [],
+    []
+  ],
+  'INDEX_EXPR111': [
+    [],
+    [
+      ['CEXPR_', 'tk_corchete_izq', 'EXPR', 'tk_corchete_der', 'INDEX_EXPR_'],
+      ['tk_par_izq', 'IL_EXPR', 'tk_par_der', 'CEXPR_', 'tk_corchete_izq', 'EXPR', 'tk_corchete_der', 'INDEX_EXPR_']
+    ],
+    [],
+    []
+  ],
+  'INDEX_EXPR121': [
+    [],
+    [
+      ['CEXPR_', 'tk_corchete_izq', 'EXPR', 'tk_corchete_der', 'INDEX_EXPR_'],
+      ['tk_par_izq', 'IL_EXPR', 'tk_par_der', 'CEXPR_', 'tk_corchete_izq', 'EXPR', 'tk_corchete_der', 'INDEX_EXPR_']
     ],
     [],
     []
   ]
-
 }
