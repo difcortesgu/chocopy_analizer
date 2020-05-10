@@ -1,5 +1,11 @@
-- + * // % == != <= >= < > is nonlocal hola
-None True False 27364 "hola" global asc
-farid:str = 1123
-1
- 
+class bar(A):
+	t:str = ""
+	t:str = "hola"
+	p: bool = True
+	u:int = 0
+
+	def baz(self:bar, xx: [int]) -> str:
+		global count
+		
+	def qux(y: int) -> object:
+		x:int = 0

@@ -21,7 +21,7 @@ def non_terminal_function(no_terminal, conjuntos, reglas):
             if_statement += " or self.token.id == \'{prediccion}\'".format(prediccion = prediccion)
         if_statement += ":\n"
         if_body = ""
-        if regla == 'e':
+        if regla == ['e']:
             if_body = "\t\t\tpass\n"
         else:
             for simbolo in regla:
@@ -33,6 +33,7 @@ def non_terminal_function(no_terminal, conjuntos, reglas):
     func += "\t\telse:\n\t\t\tself.syntaxError(tokens_esperados)"
     return func
 
+grammar = get_grammar()
 with open(file = 'syntax_analizer.py', encoding='latin-1', mode='w') as f:
     f.write('''from lexical_analizer import LexicalAnalizer
 from os import path
@@ -64,7 +65,6 @@ class SyntaxAnalizer:
 \t\terror_message += ", line: "+str(self.token.line_number)+", column: "+str(self.token.column_number) + self.CEND
 \t\tsys.exit(error_message)'''.format(tab_size = 4, initial_node = "PROGRAM"))
     
-    grammar = get_grammar()
     for key, value in grammar.items():
         func = non_terminal_function(key, value[0], value[1])
         f.write(func)

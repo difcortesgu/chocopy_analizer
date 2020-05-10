@@ -48,7 +48,7 @@ class LexicalAnalizer:
         while self.nextTokens.empty() and self.line_number < len(self.file):
             self.next_line_tokens()
         if self.nextTokens.empty():
-            return Token('tk_eof')
+            return Token('$')
         token = self.nextTokens.get()
         if token.id == 'ERROR':
             self.lexical_error(token)
@@ -70,7 +70,7 @@ class LexicalAnalizer:
                 column_number += 1
             elif char == '\t':
                 indentation_level += self.tab_size
-                column_number += self.tab_size
+                column_number += 1
             else:
                 self.nextTokens.put(Token('tk_newline'))
                 #Logic to check the indentation level

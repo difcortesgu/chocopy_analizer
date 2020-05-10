@@ -43,8 +43,8 @@ expr --> expr if expr else expr
 
 cexpr --> ID
 cexpr --> literal
-cexpr --> [ [expr [, expr]∗]?]
-cexpr --> ( expr )
+cexpr --> [ [expr [, expr]∗]?] #lista
+cexpr --> ( expr ) #expresion entre parentesis
 cexpr --> member_expr
 cexpr --> index_expr
 cexpr --> member_expr ( [expr [, expr]∗]? )

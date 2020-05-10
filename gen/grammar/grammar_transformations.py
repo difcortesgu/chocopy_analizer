@@ -1,9 +1,55 @@
-from grammar import grammar
-# from test_grammar import grammar
+import base_grammar as gr
 import copy
+import json
 
 def isNonTerminal(simbol):
     return 95 == ord(simbol[0]) or (65 <= ord(simbol[0]) and ord(simbol[0]) <= 90)
+
+def allPosibilities(rule, As, i=0):
+    if i >= len(As):
+        return [rule] 
+    r1 = copy.deepcopy(rule)
+    rule[As[i]] = ''
+    i+=1
+    rules = []
+    rules.extend(allPosibilities(r1, As, i))#con A
+    rules.extend(allPosibilities(rule, As, i))#sin A
+    return rules
+
+def replaceAllInstances(grammar, A):
+    parseB = {i:k for i,(k,v) in enumerate(grammar.items())}
+    for i in range(len(grammar)):
+        B = parseB[i]
+        rules = grammar[B][1]
+        tmp = []
+        for index,rule in enumerate(rules):
+            if A in rule: #['a', 'A']
+                del grammar[B][1][index]
+                As = [i for i in range(len(rule)) if rule[i] == A] 
+                posibilities = allPosibilities(rule, As)
+                for i,x in enumerate(posibilities):
+                    while '' in x:
+                        del posibilities[i][x.index('')]
+                tmp.extend(posibilities)
+        grammar[B][1].extend(tmp)
+
+def removeEpsilon(grammar):
+    parseB = {i:k for i,(k,v) in enumerate(grammar.items())}
+        # hasChanges = False            
+    for i in range(len(grammar)):
+        Ai = parseB[i]
+        rules = grammar[Ai][1]
+        for index,rule in enumerate(rules):
+            if rule == ['e']:
+                del grammar[Ai][1][index]
+                replaceAllInstances(grammar, Ai)
+    for i in range(len(grammar)):
+        Ai = parseB[i]
+        rules = grammar[Ai][1]
+        for index,rule in enumerate(rules):
+            if rule == []:
+                rule.append('e')
+    return grammar
 
 def removeDirectLeftRecursion(grammar, A):
     Bs = []
@@ -90,7 +136,10 @@ def removeNCommonFactors(grammar, A, factors, n, A_):
     grammar[A][1].append(factor)
     grammar[A_] = [[],[],[],[]]
     for a in aes:
-        grammar[A_][1].append(a)
+        if a == []:
+            grammar[A_][1].append(['e'])
+        else:    
+            grammar[A_][1].append(a)
     return grammar
 
 def removeLeftCommonFactors(grammar):
@@ -111,7 +160,12 @@ def removeLeftCommonFactors(grammar):
                 fi+=1
     return grammar
 
-grammar = removeLeftRecursion(grammar)
-grammar = removeLeftCommonFactors(grammar)
-print(grammar)
+def getGrammar():
+    grammar = gr.grammar
+    # grammar = removeEpsilon(grammar)
+    grammar = removeLeftRecursion(grammar)
+    grammar = removeLeftCommonFactors(grammar)
+    with open(file = 'grammar.py', encoding='latin-1', mode='w') as f:
+        f.write(json.dumps(grammar))
 
+getGrammar()
