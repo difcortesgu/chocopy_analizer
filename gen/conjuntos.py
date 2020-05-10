@@ -1,4 +1,5 @@
 from grammar.grammar import grammar
+import copy
 
 def is_alpha_e(no_terminal_rule):
     e = ['e']
@@ -13,13 +14,13 @@ def isNonTerminal(simbolo):
 
 def get_the_first_ones(rule,id):
     first_ones = []
+    print(rule)
     if is_alpha_e(rule) and 'e' not in first_ones:
         return ['e',id]
     if isNonTerminal(rule[0]):
         first_ones.extend(recursive(grammar[rule[0]],id))
         if not has_1D(first_ones):
             first_ones = flatten(first_ones)
-        
         if 'e' in first_ones:
             if len(rule)==1:
                 pass
@@ -27,8 +28,8 @@ def get_the_first_ones(rule,id):
                 index_of_e = int(first_ones.index('e'))
                 del first_ones[index_of_e+1]
                 first_ones.remove('e')                
-                for i in range(1,len(rule)):
-                    first_ones.extend(recursive(grammar[rule[i]],id))
+                for i in range(1,len(rule)):                    
+                    first_ones.extend(get_the_first_ones([rule[i]],id))
                     if not has_1D(first_ones):
                         first_ones = flatten(first_ones)
                     if 'e' in first_ones:
@@ -71,10 +72,10 @@ def get_grammar():
         no_terminal_def=grammar[key]
         for i in range(len(no_terminal_def[1])):
             result = get_the_first_ones(no_terminal_def[1][i],i)
-            tmp=list(filter((i).__ne__, result))
+            tmp=list(set(list(filter((i).__ne__, result))))
             no_terminal_def[2].insert(i,tmp)
     for key in grammar:
-        grammar[key][3].append(recursive_next(key))
+        grammar[key][3].append(recursive_next(key))    
     for key in grammar:
         primeros = grammar[key][2]
         siguientes = grammar[key][3][0]
@@ -86,7 +87,7 @@ def get_grammar():
                 conjunto = flatten(primero)
             if 'e' in conjunto:
                 conjunto = flatten(siguientes)
-            grammar[key][0].append(set(conjunto))
+            grammar[key][0].append(set(conjunto)) 
     return grammar
 
 def recursive_next(no_terminal):
@@ -108,8 +109,7 @@ def recursive_next(no_terminal):
                             for k in range(len(next_ones_tmp)):
                                 if next_ones_tmp[k] not in next_ones and next_ones_tmp[k] != 'e':
                                     next_ones.append(next_ones_tmp[k])
-                            if 'e' in next_ones:
-                                next_ones.remove('e')
+                            if 'e' in first:
                                 if key==alpha[tmp]:
                                     continue
                                 next_ones_tmp2=recursive_next(key)
