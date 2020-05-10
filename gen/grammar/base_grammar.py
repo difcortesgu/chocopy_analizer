@@ -87,8 +87,8 @@ grammar = {
     'L_STMT': [
         [],
         [
-            ['tk_id', 'L_STMT'],#el id es stmt
-            # ['STMT', 'L_STMT'],
+            # ['tk_id', 'L_STMT'],#el id es stmt
+            ['STMT', 'L_STMT'],
             ['e']
         ],[],[]
     ],
@@ -144,10 +144,10 @@ grammar = {
     'L_FUNC_STMT': [
         [],
         [
-            ['L_FUNC_STMT', 'tk_id'],#el id es stmt
-            ['tk_id'] #el id es stmt
-            # ['L_FUNC_STMT', 'STMT'],
-            # ['STMT']
+            # ['L_FUNC_STMT', 'tk_id'],#el id es stmt
+            # ['tk_id'] #el id es stmt
+            ['L_FUNC_STMT', 'STMT'],
+            ['STMT']
         ],[],[]
     ],
     'L_TYPED_VAR': [
@@ -169,44 +169,75 @@ grammar = {
 #------------------------------------------------------------------
 #------TERCERA ITERACION-------------------------------------------
 
-    # 'STMT': [
-    #     [],
-    #     [
-    #         ['SIMPLE_STMT', 'tk_newline'],
-    #         ['tk_if', 'EXPR', 'tk_dos_puntos', 'BLOCK', 'L_ELIF', 'ELSE'],
-    #         ['tk_while', 'EXPR', 'tk_dos_puntos', 'BLOCK'],
-    #         ['tk_for', 'tk_id', 'tk_in', 'EXPR', 'tk_dos_puntos', 'BLOCK']
-    #     ],[],[]
-    # ],
-    # 'SIMPLE_STMT': [
-    #     [],
-    #     [
-    #         ['tk_pass'],
-    #         ['EXPR'],
-    #         ['tk_return', 'OPT_EXPR'],
-    #         ['L_TARGET', 'EXPR']
-    #     ],[],[]
-    # ],
-    # 'BLOCK': [
-    #     [],
-    #     [
-    #         ['tk_newline', 'tk_indent', 'L_FUNC_STMT', 'tk_dedent']
-    #     ],[],[]
-    # ],
-    # 'L_ELIF': [
-    #     [],
-    #     [
-    #         ['tk_elif', 'EXPR', 'tk_dos_puntos', 'BLOCK', 'L_ELIF'],
-    #         ['e']
-    #     ],[],[]
-    # ],
-    # 'ELSE': [ 
-    #     [],
-    #     [
-    #         ['tk_else', 'tk_dos_puntos', 'BLOCK'],
-    #         ['e']
-    #     ],[],[]
-    # ],
+    'STMT': [
+        [],
+        [
+            ['SIMPLE_STMT', 'tk_newline'],
+            # ['tk_if', 'EXPR', 'tk_dos_puntos', 'BLOCK', 'L_ELIF', 'ELSE'],
+            # ['tk_while', 'EXPR', 'tk_dos_puntos', 'BLOCK'],
+            # ['tk_for', 'tk_id', 'tk_in', 'EXPR', 'tk_dos_puntos', 'BLOCK']
+            ['tk_if', 'tk_id', 'tk_dos_puntos', 'BLOCK', 'L_ELIF', 'ELSE'],
+            ['tk_while', 'tk_id', 'tk_dos_puntos', 'BLOCK'],
+            ['tk_for', 'tk_id', 'tk_in', 'tk_id', 'tk_dos_puntos', 'BLOCK']
+        ],[],[]
+    ],
+    'SIMPLE_STMT': [
+        [],
+        [
+            ['tk_pass'],
+            # ['EXPR'],
+            ['tk_id'],
+            ['tk_return', 'OPT_EXPR'],
+            # ['L_TARGET', 'EXPR']
+            ['L_TARGET', 'tk_id']
+        ],[],[]
+    ],
+    'BLOCK': [
+        [],
+        [
+            ['tk_newline', 'tk_indent', 'L_FUNC_STMT', 'tk_dedent']
+        ],[],[]
+    ],
+    'L_ELIF': [
+        [],
+        [
+            # ['tk_elif', 'EXPR', 'tk_dos_puntos', 'BLOCK', 'L_ELIF'],
+            ['tk_elif', 'tk_id', 'tk_dos_puntos', 'BLOCK', 'L_ELIF'],
+            ['e']
+        ],[],[]
+    ],
+    'ELSE': [ 
+        [],
+        [
+            ['tk_else', 'tk_dos_puntos', 'BLOCK'],
+            ['e']
+        ],[],[]
+    ],
+    'OPT_EXPR': [
+        [],
+        [
+            # ['EXPR'],
+            ['tk_id'],
+            ['e']
+        ],[],[]
+    ],
+    'L_TARGET': [
+        [],
+        [
+            ['L_TARGET', 'TARGET', 'tk_asignacion'],
+            ['TARGET', 'tk_asignacion']
+        ],[],[]
+    ],
+    'TARGET': [
+        [],
+        [
+            ['tk_id'],
+            # ['MEMBER_EXPR'],
+            # ['INDEX_EXPR']
+        ],[],[]
+    ],
+#------------------------------------------------------------------
+#------CUARTA ITERACION--------------------------------------------
     # 'EXPR': [
     #     [],
     #     [
@@ -217,30 +248,6 @@ grammar = {
     #         ['EXPR', 'tk_if', 'EXPR', 'tk_else', 'EXPR']#
     #     ],[],[]
     # ],
-    # 'OPT_EXPR': [
-    #     [],
-    #     [
-    #         ['EXPR'],
-    #         ['e']
-    #     ],[],[]
-    # ],
-    # 'L_TARGET': [
-    #     [],
-    #     [
-    #         ['L_TARGET', 'TARGET', 'tk_asignacion'],
-    #         ['TARGET', 'tk_asignacion']
-    #     ],[],[]
-    # ],
-    # 'TARGET': [
-    #     [],
-    #     [
-    #         ['tk_id'],
-    #         ['MEMBER_EXPR'],
-    #         ['INDEX_EXPR']
-    #     ],[],[]
-    # ],
-#------------------------------------------------------------------
-#------CUARTA ITERACION--------------------------------------------
     # 'CEXPR': [
     #     [],
     #     [

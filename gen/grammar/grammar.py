@@ -99,7 +99,7 @@ grammar = {
   "L_STMT": [
     [],
     [
-      ["tk_id", "L_STMT"],
+      ["STMT", "L_STMT"],
       ["e"]
     ],
     [],
@@ -171,7 +171,7 @@ grammar = {
   "L_FUNC_STMT": [
     [],
     [
-      ["tk_id", "L_FUNC_STMT_"]
+      ["STMT", "L_FUNC_STMT_"]
     ],
     [],
     []
@@ -194,10 +194,83 @@ grammar = {
     [],
     []
   ],
+  "STMT": [
+    [],
+    [
+      ["SIMPLE_STMT", "tk_newline"],
+      ["tk_if", "tk_id", "tk_dos_puntos", "BLOCK", "L_ELIF", "ELSE"],
+      ["tk_while", "tk_id", "tk_dos_puntos", "BLOCK"],
+      ["tk_for", "tk_id", "tk_in", "tk_id", "tk_dos_puntos", "BLOCK"]
+    ],
+    [],
+    []
+  ],
+  "SIMPLE_STMT": [
+    [],
+    [
+      ["tk_pass"],
+      ["tk_id"],
+      ["tk_return", "OPT_EXPR"],
+      ["L_TARGET", "tk_id"]
+    ],
+    [],
+    []
+  ],
+  "BLOCK": [
+    [],
+    [
+      ["tk_newline", "tk_indent", "L_FUNC_STMT", "tk_dedent"]
+    ],
+    [],
+    []
+  ],
+  "L_ELIF": [
+    [],
+    [
+      ["tk_elif", "tk_id", "tk_dos_puntos", "BLOCK", "L_ELIF"],
+      ["e"]
+    ],
+    [],
+    []
+  ],
+  "ELSE": [
+    [],
+    [
+      ["tk_else", "tk_dos_puntos", "BLOCK"],
+      ["e"]
+    ],
+    [],
+    []
+  ],
+  "OPT_EXPR": [
+    [],
+    [
+      ["tk_id"],
+      ["e"]
+    ],
+    [],
+    []
+  ],
+  "L_TARGET": [
+    [],
+    [
+      ["TARGET", "tk_asignacion", "L_TARGET_"]
+    ],
+    [],
+    []
+  ],
+  "TARGET": [
+    [],
+    [
+      ["tk_id"]
+    ],
+    [],
+    []
+  ],
   "L_FUNC_STMT_": [
     [],
     [
-      ["tk_id", "L_FUNC_STMT_"],
+      ["STMT", "L_FUNC_STMT_"],
       ["e"]
     ],
     [],
@@ -208,6 +281,15 @@ grammar = {
     [
       ["VAR_DEF", "L_CLASS_BODY_"],
       ["FUNC_DEF", "L_CLASS_BODY_"],
+      ["e"]
+    ],
+    [],
+    []
+  ],
+  "L_TARGET_": [
+    [],
+    [
+      ["TARGET", "tk_asignacion", "L_TARGET_"],
       ["e"]
     ],
     [],

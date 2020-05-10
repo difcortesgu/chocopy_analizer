@@ -12,7 +12,7 @@ class SyntaxAnalizer:
 
 	def analize(self):
 		self.PROGRAM()
-		if (self.token.id != 'EOF'):
+		if (self.token.id != '$'):
 			sys.exit(self.CRED + "Error: Unexpected token '"+self.token.lexema+"' expecting 'EOF', line: "+str(self.token.line_number)+", column: "+str(self.token.column_number) + self.CEND)
 
 	def emparejar(self, simbolo):
@@ -170,11 +170,16 @@ class SyntaxAnalizer:
 
 	def PROGRAM(self):
 		tokens_esperados = [
-			'tk_def',
 			'tk_id',
+			'tk_for',
+			'tk_while',
+			'tk_return',
+			'tk_if',
+			'tk_pass',
+			'tk_def',
 			'tk_class',
 		]
-		if self.token.id == 'tk_def' or self.token.id == 'tk_id' or self.token.id == 'tk_class':
+		if self.token.id == 'tk_id' or self.token.id == 'tk_for' or self.token.id == 'tk_while' or self.token.id == 'tk_return' or self.token.id == 'tk_if' or self.token.id == 'tk_pass' or self.token.id == 'tk_def' or self.token.id == 'tk_class':
 			self.L_DEF()
 			self.L_STMT()
 		else:
@@ -186,6 +191,11 @@ class SyntaxAnalizer:
 			'tk_class',
 			'tk_id',
 			'tk_id',
+			'tk_for',
+			'tk_while',
+			'tk_return',
+			'tk_if',
+			'tk_pass',
 		]
 		if self.token.id == 'tk_def':
 			self.FUNC_DEF()
@@ -201,7 +211,7 @@ class SyntaxAnalizer:
 			self.LITERAL()
 			self.emparejar('tk_newline')
 			self.L_DEF()
-		elif self.token.id == 'tk_id':
+		elif self.token.id == 'tk_id' or self.token.id == 'tk_for' or self.token.id == 'tk_while' or self.token.id == 'tk_return' or self.token.id == 'tk_if' or self.token.id == 'tk_pass':
 			pass
 		else:
 			self.syntaxError(tokens_esperados)
@@ -209,10 +219,15 @@ class SyntaxAnalizer:
 	def L_STMT(self):
 		tokens_esperados = [
 			'tk_id',
+			'tk_for',
+			'tk_while',
+			'tk_return',
+			'tk_if',
+			'tk_pass',
 			'$',
 		]
-		if self.token.id == 'tk_id':
-			self.emparejar('tk_id')
+		if self.token.id == 'tk_id' or self.token.id == 'tk_for' or self.token.id == 'tk_while' or self.token.id == 'tk_return' or self.token.id == 'tk_if' or self.token.id == 'tk_pass':
+			self.STMT()
 			self.L_STMT()
 		elif self.token.id == '$':
 			pass
@@ -286,12 +301,17 @@ class SyntaxAnalizer:
 
 	def FUNC_BODY(self):
 		tokens_esperados = [
-			'tk_nonlocal',
 			'tk_global',
-			'tk_def',
 			'tk_id',
+			'tk_for',
+			'tk_while',
+			'tk_return',
+			'tk_if',
+			'tk_pass',
+			'tk_def',
+			'tk_nonlocal',
 		]
-		if self.token.id == 'tk_nonlocal' or self.token.id == 'tk_global' or self.token.id == 'tk_def' or self.token.id == 'tk_id':
+		if self.token.id == 'tk_global' or self.token.id == 'tk_id' or self.token.id == 'tk_for' or self.token.id == 'tk_while' or self.token.id == 'tk_return' or self.token.id == 'tk_if' or self.token.id == 'tk_pass' or self.token.id == 'tk_def' or self.token.id == 'tk_nonlocal':
 			self.L_FUNC_BODY()
 			self.L_FUNC_STMT()
 		else:
@@ -300,13 +320,13 @@ class SyntaxAnalizer:
 	def CLASS_BODY(self):
 		tokens_esperados = [
 			'tk_pass',
-			'tk_def',
 			'tk_id',
+			'tk_def',
 		]
 		if self.token.id == 'tk_pass':
 			self.emparejar('tk_pass')
 			self.emparejar('tk_newline')
-		elif self.token.id == 'tk_def' or self.token.id == 'tk_id':
+		elif self.token.id == 'tk_id' or self.token.id == 'tk_def':
 			self.L_CLASS_BODY()
 		else:
 			self.syntaxError(tokens_esperados)
@@ -318,6 +338,11 @@ class SyntaxAnalizer:
 			'tk_def',
 			'tk_nonlocal',
 			'tk_id',
+			'tk_for',
+			'tk_while',
+			'tk_return',
+			'tk_if',
+			'tk_pass',
 		]
 		if self.token.id == 'tk_global':
 			self.emparejar('tk_global')
@@ -350,7 +375,7 @@ class SyntaxAnalizer:
 			self.emparejar('tk_id')
 			self.emparejar('tk_newline')
 			self.L_FUNC_BODY()
-		elif self.token.id == 'tk_id':
+		elif self.token.id == 'tk_id' or self.token.id == 'tk_for' or self.token.id == 'tk_while' or self.token.id == 'tk_return' or self.token.id == 'tk_if' or self.token.id == 'tk_pass':
 			pass
 		else:
 			self.syntaxError(tokens_esperados)
@@ -358,9 +383,14 @@ class SyntaxAnalizer:
 	def L_FUNC_STMT(self):
 		tokens_esperados = [
 			'tk_id',
+			'tk_for',
+			'tk_while',
+			'tk_return',
+			'tk_if',
+			'tk_pass',
 		]
-		if self.token.id == 'tk_id':
-			self.emparejar('tk_id')
+		if self.token.id == 'tk_id' or self.token.id == 'tk_for' or self.token.id == 'tk_while' or self.token.id == 'tk_return' or self.token.id == 'tk_if' or self.token.id == 'tk_pass':
+			self.STMT()
 			self.L_FUNC_STMT_()
 		else:
 			self.syntaxError(tokens_esperados)
@@ -408,13 +438,151 @@ class SyntaxAnalizer:
 		else:
 			self.syntaxError(tokens_esperados)
 
-	def L_FUNC_STMT_(self):
+	def STMT(self):
+		tokens_esperados = [
+			'tk_return',
+			'tk_pass',
+			'tk_id',
+			'tk_if',
+			'tk_while',
+			'tk_for',
+		]
+		if self.token.id == 'tk_return' or self.token.id == 'tk_pass' or self.token.id == 'tk_id':
+			self.SIMPLE_STMT()
+			self.emparejar('tk_newline')
+		elif self.token.id == 'tk_if':
+			self.emparejar('tk_if')
+			self.emparejar('tk_id')
+			self.emparejar('tk_dos_puntos')
+			self.BLOCK()
+			self.L_ELIF()
+			self.ELSE()
+		elif self.token.id == 'tk_while':
+			self.emparejar('tk_while')
+			self.emparejar('tk_id')
+			self.emparejar('tk_dos_puntos')
+			self.BLOCK()
+		elif self.token.id == 'tk_for':
+			self.emparejar('tk_for')
+			self.emparejar('tk_id')
+			self.emparejar('tk_in')
+			self.emparejar('tk_id')
+			self.emparejar('tk_dos_puntos')
+			self.BLOCK()
+		else:
+			self.syntaxError(tokens_esperados)
+
+	def SIMPLE_STMT(self):
+		tokens_esperados = [
+			'tk_pass',
+			'tk_id',
+			'tk_return',
+			'tk_id',
+		]
+		if self.token.id == 'tk_pass':
+			self.emparejar('tk_pass')
+		elif self.token.id == 'tk_id':
+			self.emparejar('tk_id')
+		elif self.token.id == 'tk_return':
+			self.emparejar('tk_return')
+			self.OPT_EXPR()
+		elif self.token.id == 'tk_id':
+			self.L_TARGET()
+			self.emparejar('tk_id')
+		else:
+			self.syntaxError(tokens_esperados)
+
+	def BLOCK(self):
+		tokens_esperados = [
+			'tk_newline',
+		]
+		if self.token.id == 'tk_newline':
+			self.emparejar('tk_newline')
+			self.emparejar('tk_indent')
+			self.L_FUNC_STMT()
+			self.emparejar('tk_dedent')
+		else:
+			self.syntaxError(tokens_esperados)
+
+	def L_ELIF(self):
+		tokens_esperados = [
+			'tk_elif',
+			'tk_else',
+		]
+		if self.token.id == 'tk_elif':
+			self.emparejar('tk_elif')
+			self.emparejar('tk_id')
+			self.emparejar('tk_dos_puntos')
+			self.BLOCK()
+			self.L_ELIF()
+		elif self.token.id == 'tk_else':
+			pass
+		else:
+			self.syntaxError(tokens_esperados)
+
+	def ELSE(self):
+		tokens_esperados = [
+			'tk_else',
+			'tk_id',
+			'tk_for',
+			'tk_while',
+			'tk_return',
+			'tk_if',
+			'tk_pass',
+		]
+		if self.token.id == 'tk_else':
+			self.emparejar('tk_else')
+			self.emparejar('tk_dos_puntos')
+			self.BLOCK()
+		elif self.token.id == 'tk_id' or self.token.id == 'tk_for' or self.token.id == 'tk_while' or self.token.id == 'tk_return' or self.token.id == 'tk_if' or self.token.id == 'tk_pass':
+			pass
+		else:
+			self.syntaxError(tokens_esperados)
+
+	def OPT_EXPR(self):
 		tokens_esperados = [
 			'tk_id',
-			'tk_dedent',
+			'tk_newline',
 		]
 		if self.token.id == 'tk_id':
 			self.emparejar('tk_id')
+		elif self.token.id == 'tk_newline':
+			pass
+		else:
+			self.syntaxError(tokens_esperados)
+
+	def L_TARGET(self):
+		tokens_esperados = [
+			'tk_id',
+		]
+		if self.token.id == 'tk_id':
+			self.TARGET()
+			self.emparejar('tk_asignacion')
+			self.L_TARGET_()
+		else:
+			self.syntaxError(tokens_esperados)
+
+	def TARGET(self):
+		tokens_esperados = [
+			'tk_id',
+		]
+		if self.token.id == 'tk_id':
+			self.emparejar('tk_id')
+		else:
+			self.syntaxError(tokens_esperados)
+
+	def L_FUNC_STMT_(self):
+		tokens_esperados = [
+			'tk_id',
+			'tk_for',
+			'tk_while',
+			'tk_return',
+			'tk_if',
+			'tk_pass',
+			'tk_dedent',
+		]
+		if self.token.id == 'tk_id' or self.token.id == 'tk_for' or self.token.id == 'tk_while' or self.token.id == 'tk_return' or self.token.id == 'tk_if' or self.token.id == 'tk_pass':
+			self.STMT()
 			self.L_FUNC_STMT_()
 		elif self.token.id == 'tk_dedent':
 			pass
@@ -434,6 +602,20 @@ class SyntaxAnalizer:
 			self.FUNC_DEF()
 			self.L_CLASS_BODY_()
 		elif self.token.id == 'tk_dedent':
+			pass
+		else:
+			self.syntaxError(tokens_esperados)
+
+	def L_TARGET_(self):
+		tokens_esperados = [
+			'tk_id',
+			'tk_id',
+		]
+		if self.token.id == 'tk_id':
+			self.TARGET()
+			self.emparejar('tk_asignacion')
+			self.L_TARGET_()
+		elif self.token.id == 'tk_id':
 			pass
 		else:
 			self.syntaxError(tokens_esperados)

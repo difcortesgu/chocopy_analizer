@@ -49,7 +49,7 @@ class SyntaxAnalizer:
 
 \tdef analize(self):
 \t\tself.{initial_node}()
-\t\tif (self.token.id != 'EOF'):
+\t\tif (self.token.id != '$'):
 \t\t\tsys.exit(self.CRED + "Error: Unexpected token '"+self.token.lexema+"' expecting 'EOF', line: "+str(self.token.line_number)+", column: "+str(self.token.column_number) + self.CEND)
 
 \tdef emparejar(self, simbolo):
