@@ -111,6 +111,11 @@ class LexicalAnalizer:
             self.nextTokens.put(Token('tk_number', token['lexema'], self.line_number+1, column_number+1))
             return self.transition_function(token['next'])
         
+        token = self.check_idstring(column_number)
+        if token['lexema']:
+            self.nextTokens.put(Token('tk_idstring', token['lexema'], self.line_number+1, column_number+1))
+            return self.transition_function(token['next']) 
+
         token = self.check_string(column_number)
         if token['lexema']:
             self.nextTokens.put(Token('tk_string', token['lexema'], self.line_number+1, column_number+1))
@@ -160,6 +165,29 @@ class LexicalAnalizer:
                 return {'lexema':None, 'next':None}
             return {'lexema':string[column_number:final], 'next':final}
            
+    def check_idstring(self,column_number):
+        string = self.file[self.line_number]
+        final = column_number
+        if string[column_number] == '\"':
+            for i ,char in enumerate(string[column_number+1:]):
+                if char == '\"':
+                    final = column_number + i +1
+                    break
+            if column_number==final:                
+                return {'lexema':None, 'next':None}
+            else:
+                token = self.check_id(column_number+1)
+                if token['lexema']:
+                    if len(token['lexema'])== len(string[column_number:final+1])-2:
+                        return {'lexema':string[column_number:final+1], 'next':final+1}
+                    else:
+                        return {'lexema':None, 'next':None}
+                else:
+                    return {'lexema':None, 'next':None}
+
+        else:
+            return {'lexema':None, 'next':None}   
+    
     def check_string(self, column_number):
         string = self.file[self.line_number]
         if str.isdigit(string[column_number]):
@@ -168,6 +196,8 @@ class LexicalAnalizer:
         if string[column_number] == '\"':
             for i ,char in enumerate(string[column_number+1:]):
                 if char == '\"':
+                    if string[column_number+1] == '\"':                        
+                        return {'lexema':string[column_number:column_number+2], 'next':column_number+2}
                     if string[column_number+i]=='\x5c':
                         continue
                     else:
@@ -274,6 +304,8 @@ class LexicalAnalizer:
         actual = string[column_number]
         if ((48 <= ord(actual) and ord(actual) <= 57) or (65 <= ord(actual) and ord(actual) <= 90) or (97 <= ord(actual) and ord(actual) <= 122) or (ord(actual) == 95)): #is number or letter
             for i, char in enumerate(string[column_number:]):
+                if i==0 and not ((65 <= ord(char) and ord(char) <= 90) or (97 <= ord(char) and ord(char) <= 122) or (ord(char) == 95)):             
+                    break
                 if not ((48 <= ord(char) and ord(char) <= 57) or (65 <= ord(char) and ord(char) <= 90) or (97 <= ord(char) and ord(char) <= 122) or (ord(char) == 95)):
                     break
             final = column_number + i
